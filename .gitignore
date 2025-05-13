@@ -1,3 +1,5 @@
+.idea
+.gradle
 build
 rome_static_gtfs/*.txt
 
