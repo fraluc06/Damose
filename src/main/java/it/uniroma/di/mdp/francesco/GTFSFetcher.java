@@ -19,7 +19,7 @@ public class GTFSFetcher {
             for (GtfsRealtime.FeedEntity entity : feed.getEntityList()) {
                 if (entity.hasVehicle()) {
                     GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
-                    System.out.println(vehicle);
+                    //System.out.println(vehicle);
                     double lat = vehicle.getPosition().getLatitude();
                     double lon = vehicle.getPosition().getLongitude();
                     positions.add(new GeoPosition(lat, lon));

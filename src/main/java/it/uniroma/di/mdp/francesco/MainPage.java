@@ -124,12 +124,14 @@ public class MainPage {
                 public void run() {
                     updateBusPositions();
                 }
-            }, 0, 15000); // Refresh every 15 sec
+            }, 0, 30000); // Refresh every 15 sec
         });
-
-        GTFSAllRoutes allRoutes = new GTFSAllRoutes(); // creo oggetto lista di tutte le linee statiche
+        Trips allTrips = new Trips(); // oggetto lista di tutti i trips
+        Routes allRoutes = new Routes(); // creo oggetto lista di tutte le linee statiche
         allRoutes.loadFromFile("./rome_static_gtfs/routes.txt");
-        allRoutes.printRoutes(); // stampa la lista delle Linee
+        //allRoutes.print(); // stampa la lista delle Linee
+        allTrips.loadFromFile("./rome_static_gtfs/trips.txt");
+        allTrips.Print("3");
     }
 
     private static void updateBusPositions() {

@@ -7,24 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 // classe per rappresentare tutte le linee (routes)
-public class GTFSAllRoutes
+public class Routes
 {
-    private List<GTFSStaticRoute> listOfRoute;
+    private List<Route> listOfRoute;
 
     // costruttore
-    public GTFSAllRoutes()
+    public Routes()
     {
-        listOfRoute = new ArrayList<GTFSStaticRoute>();
+        listOfRoute = new ArrayList<Route>();
     }
 
     //metodo per aggiungere una nuova linea
-    public void addRoute(GTFSStaticRoute route)
+    public void addRoute(Route route)
     {
         listOfRoute.add(route);
     }
-    public void printRoutes()
+    public void print()
     {
-        for (GTFSStaticRoute elemento : listOfRoute)
+        for (Route elemento : listOfRoute)
         {
             System.out.println(elemento.getRouteId());
         }
@@ -49,11 +49,11 @@ public class GTFSAllRoutes
                 { // dalla seconda riga in poi
 
                     // nel primo campo della riga fields[0] c'è il nome della linea
-                    GTFSStaticRoute currentRoute = new GTFSStaticRoute(fields[0]); // creo una linea statica
+                    Route currentRoute = new Route(fields[0]); // creo una linea statica
                     this.addRoute(currentRoute); // inserisco la linea statica nella lista delle linee
                 }
                 String routeId = fields[0];
-                GTFSStaticRoute route = new GTFSStaticRoute(routeId);
+                Route route = new Route(routeId);
                 addRoute(route);
             } // fine while
             reader.close();
