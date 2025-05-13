@@ -1,5 +1,5 @@
 build
-rome_static_gtfs
+rome_static_gtfs/*.txt
 
 ### Mac OS ###
 .DS_Store
