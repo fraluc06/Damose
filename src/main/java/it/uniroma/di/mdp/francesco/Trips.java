@@ -78,11 +78,11 @@ public class Trips
         }
     }
 
-    // stampa tutti i trip del singolo route_id
-    public void Print(String route_id)
+    // stampa tutti i trip del singolo routeId
+    public void Print(String routeId)
     {
         for (Trip elemento : listOfTrips) {
-            if (elemento.getRouteId().equals(route_id))
+            if (elemento.getRouteId().equals(routeId))
              System.out.println("Trip: "+elemento.getTripId()+" Route: "+elemento.getRouteId()+" Headsign: "+elemento.getTripHeadSign());
 
         }
