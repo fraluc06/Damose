@@ -126,12 +126,16 @@ public class MainPage {
                 }
             }, 0, 30000); // Refresh every 15 sec
         });
+
         Trips allTrips = new Trips(); // oggetto lista di tutti i trips
         Routes allRoutes = new Routes(); // creo oggetto lista di tutte le linee statiche
+        Stops allStops = new Stops();
+        allStops.loadFromFile("./rome_static_gtfs/stops.txt");
+        allStops.Print();
         allRoutes.loadFromFile("./rome_static_gtfs/routes.txt");
         //allRoutes.print(); // stampa la lista delle Linee
         allTrips.loadFromFile("./rome_static_gtfs/trips.txt");
-        allTrips.Print("3");
+        //allTrips.Print("3");
     }
 
     private static void updateBusPositions() {

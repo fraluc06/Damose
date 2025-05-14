@@ -37,13 +37,13 @@ public class Routes
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String line;
-            boolean firstLine = true; //la prima riga la scarto perché contiene intestazione dei campi
+            boolean primaRiga = true; //la prima riga la scarto perché contiene intestazione dei campi
             while ((line = reader.readLine()) != null) // legge le linee del file
             {
                 String[] fields = line.split(delimiter);// split della linea in base al delimitatore
-                if (firstLine)
+                if (primaRiga)
                 {
-                    firstLine = false;
+                    primaRiga = false;
                 }
                 else
                 { // dalla seconda riga in poi
