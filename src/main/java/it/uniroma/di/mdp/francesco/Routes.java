@@ -9,22 +9,22 @@ import java.util.List;
 // classe per rappresentare tutte le linee (routes)
 public class Routes
 {
-    private List<Route> listOfRoute;
+    private List<Route> listOfRoutes;
 
     // costruttore
     public Routes()
     {
-        listOfRoute = new ArrayList<Route>();
+        listOfRoutes = new ArrayList<Route>();
     }
 
     //metodo per aggiungere una nuova linea
     public void addRoute(Route route)
     {
-        listOfRoute.add(route);
+        listOfRoutes.add(route);
     }
     public void print()
     {
-        for (Route elemento : listOfRoute)
+        for (Route elemento : listOfRoutes)
         {
             System.out.println(elemento.getRouteId());
         }
