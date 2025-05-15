@@ -130,8 +130,11 @@ public class MainPage {
         Trips allTrips = new Trips(); // oggetto lista di tutti i trips
         Routes allRoutes = new Routes(); // creo oggetto lista di tutte le linee statiche
         Stops allStops = new Stops();
+        StopTimes allStopTimes = new StopTimes();
+        allStopTimes.loadFromFile("./rome_static_gtfs/stop_times.txt");
+        allStopTimes.Print("1#1-7");
         allStops.loadFromFile("./rome_static_gtfs/stops.txt");
-        allStops.Print();
+        //allStops.Print();
         allRoutes.loadFromFile("./rome_static_gtfs/routes.txt");
         //allRoutes.print(); // stampa la lista delle Linee
         allTrips.loadFromFile("./rome_static_gtfs/trips.txt");
