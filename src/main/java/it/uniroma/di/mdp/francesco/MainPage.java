@@ -20,12 +20,16 @@ public class MainPage {
     public static void main(String[] args) {
         StaticGTFSDownloader downloader = new StaticGTFSDownloader(gp.getFileURL(), gp.getMd5URL(), gp.getFolderPath());
         try {
-            System.out.println("Dati non presenti o non aggiornati, sto scaricando i dati...");
-            downloader.downloadAndUnzipIfNeeded();
-            System.out.println("Dati aggiornati.");
+            boolean downloaded = downloader.downloadAndUnzipIfNeeded();
+            if (downloaded) {
+                System.out.println("Dati non presenti o non aggiornati, sto scaricando i dati...");
+                System.out.println("Dati aggiornati.");
+            } else {
+                System.out.println("Dati già presenti e aggiornati.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Errore durante l'aggiornamento dei dati!");
         }
 
         SwingUtilities.invokeLater(() -> {

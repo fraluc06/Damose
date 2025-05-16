@@ -37,7 +37,7 @@ public class StaticGTFSDownloader {
     }
 
     // Scarica il file ZIP se non aggiornato e lo estrae
-    public void downloadAndUnzipIfNeeded() throws IOException, InterruptedException, NoSuchAlgorithmException {
+    public boolean downloadAndUnzipIfNeeded() throws IOException, InterruptedException, NoSuchAlgorithmException {
         Files.createDirectories(folderPath);
 
         if (!isUpToDate()) {
@@ -50,13 +50,16 @@ public class StaticGTFSDownloader {
                     HttpResponse.BodyHandlers.ofFile(localFile));
 
             if (response.statusCode() == 200) {
-                // Estrai e sovrascrivi i file nella cartella
                 unzipFile(localFile, folderPath);
+                return true; // dati scaricati e aggiornati
             } else {
                 throw new IOException("Download failed, status code: " + response.statusCode());
             }
         }
+
+        return false; // già aggiornato, nessun download effettuato
     }
+
 
     // Metodo per leggere il contenuto testuale da un URL (il file .md5 remoto)
     private String downloadAsString(String url) throws IOException, InterruptedException {
