@@ -2,6 +2,7 @@ package it.uniroma.di.mdp.francesco;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.nio.file.Path;
 
 public class GlobalParameters {
     private int mapZoom;
@@ -23,7 +24,7 @@ public class GlobalParameters {
     // URL e path per GTFS (aggiungi qui i tuoi valori reali)
     private final String FILE_URL = "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip";
     private final String MD5_URL = "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip.md5";
-    private final java.nio.file.Path FOLDER_PATH = java.nio.file.Paths.get("rome_static_gtfs");
+    private final Path FOLDER_PATH = java.nio.file.Paths.get("rome_static_gtfs");
 
     public String getFileURL() {
         return FILE_URL;
@@ -33,7 +34,7 @@ public class GlobalParameters {
         return MD5_URL;
     }
 
-    public java.nio.file.Path getFolderPath() {
+    public Path getFolderPath() {
         return FOLDER_PATH;
     }
 
