@@ -1,7 +1,6 @@
 .idea
 .gradle
 build
-rome_static_gtfs/*.txt
 
 ### Mac OS ###
 .DS_Store
