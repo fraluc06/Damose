@@ -34,8 +34,10 @@ public class MainPage {
     }
 
     private void initializeApplication() {
-        Path folder = Path.of(GTFS_FOLDER);
-        StaticGTFSDownloader downloader = new StaticGTFSDownloader(GTFS_FILE_URL, GTFS_MD5_URL, folder);
+        GlobalParam gp = new GlobalParam();
+
+        StaticGTFSDownloader downloader = new StaticGTFSDownloader(gp.getFileURL(), gp.getMd5URL(), gp.getFolderPath());
+
         try {
             downloader.downloadAndUnzipIfNeeded();
             System.out.println("File scaricato ed estratto se necessario.");
