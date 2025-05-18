@@ -144,23 +144,38 @@ public class MainPage {
         button.setPreferredSize(gp.BUTTON_SIZE);
         return button;
     }
+    // metodo per creare il pannello di ricerca
     private static JPanel createLeftPanel() {
-        // Implementa qui la logica per la ricerca delle fermate
-        // Puoi usare un JTextField per l'input dell'utente e un JButton per avviare la ricerca
-        // Ad esempio:
         JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         JTextField searchField = new JTextField(10);
+        searchField.setMaximumSize(new Dimension(200, 30));
         JButton searchButton = new JButton("Cerca");
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);           // Disattiva modifica
+        resultArea.setFocusable(false);          // Niente focus da tastiera
+        resultArea.setHighlighter(null);         // Disattiva selezione del testo
+        resultArea.setDragEnabled(false);        // Disattiva il drag del testo
+        resultArea.setLineWrap(true);            // Vai a capo automatico
+        resultArea.setWrapStyleWord(true);       // A capo solo su parole
+        resultArea.setOpaque(false);             // Sfondo trasparente
+        resultArea.setBorder(null);              // Nessun bordo
+
         searchField.setPreferredSize(new Dimension(100, 30));
         panel.add(searchField);
+        panel.add(Box.createVerticalStrut(10));
         panel.add(searchButton);
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(resultArea);
         searchButton.addActionListener(e -> {
-            String searchText = searchField.getText();
-            Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop == null) {
-                JOptionPane.showMessageDialog(panel, "Fermata non trovata");
+            String searchText = searchField.getText().trim().toUpperCase();
+                    if (searchText.isEmpty()) {
+                JOptionPane.showMessageDialog(panel,"Inserisci il nome o il codice di una fermata");
                 return;
             }
+
+            Stop foundStop = allStops.searchStop(searchText);
+            resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
             foundStop.print();
             Set<BusWaypoint> waypoints = new HashSet<>();
             waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
@@ -168,9 +183,6 @@ public class MainPage {
                     painter.setWaypoints(waypoints);
                     mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                     mapViewer.setOverlayPainter(painter);
-            // Implementa questo metodo per cercare lo stop
-            // Logica per cercare la fermata e centrare la mappa su di essa
-            // Puoi usare GTFSFetcher per ottenere le posizioni delle fermate
         });
 
         return panel;
