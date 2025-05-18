@@ -175,8 +175,15 @@ public class MainPage {
             }
 
             Stop foundStop = allStops.searchStop(searchText);
-            resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
-            foundStop.print();
+            if (foundStop != null) {
+                resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
+                foundStop.print();
+                return;
+            }
+            else {
+                JOptionPane.showMessageDialog(panel,"Fermata non trovata");
+            }
+
             Set<BusWaypoint> waypoints = new HashSet<>();
             waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                     WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
