@@ -178,18 +178,16 @@ public class MainPage {
             if (foundStop != null) {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
                 foundStop.print();
-                return;
+                Set<BusWaypoint> waypoints = new HashSet<>();
+                waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
+                painter.setWaypoints(waypoints);
+                mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                mapViewer.setOverlayPainter(painter);
             }
             else {
                 JOptionPane.showMessageDialog(panel,"Fermata non trovata");
             }
-
-            Set<BusWaypoint> waypoints = new HashSet<>();
-            waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
-                    WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
-                    painter.setWaypoints(waypoints);
-                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
-                    mapViewer.setOverlayPainter(painter);
         });
 
         return panel;
