@@ -24,6 +24,13 @@ public class Stop {
         return stopLon;
     }
 
+    public void print() {
+        System.out.println("Stop ID: " + stopId);
+        System.out.println("Stop Name: " + stopName);
+        System.out.println("Stop Latitude: " + stopLat);
+        System.out.println("Stop Longitude: " + stopLon);
+    }
+
 
 // costruttore
     public Stop(String stopId,String stopName,String stopLat,String stopLon) {

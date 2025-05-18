@@ -42,12 +42,14 @@ public class Stops {
                 if (primaRiga) {
                     primaRiga = false;
                 }
-                else { // dalla seconda riga in poi
-                        String currentStopId =   fields[0]; // stop_id dello stop
-                        String current_stop_name = fields[2]; // nome dello stop (fermata)
-                        String currentStopLat =  fields[4]; // latitudine dello stop
-                        String currentStopLon =  fields[5]; // longitudine dello stop
-                    Stop current_stop = new Stop(currentStopId, current_stop_name, currentStopLat,currentStopLon); // creo uno oggetto stop (fermata)
+                else {       // dalla seconda riga in poi
+                    String currentStopId = fields[0]; // stop_id dello stop
+                    String current_stop_name = fields[2]; // nome dello stop (fermata)
+                    // Rimuove eventuali caratteri di nuova linea dal nome dello stop
+                    current_stop_name = current_stop_name.replace("\"", "");
+                    String currentStopLat = fields[4]; // latitudine dello stop
+                    String currentStopLon = fields[5]; // longitudine dello stop
+                    Stop current_stop = new Stop(currentStopId, current_stop_name, currentStopLat, currentStopLon); // creo uno oggetto stop (fermata)
                     this.AddStop(current_stop); // inserisco lo stop (fermata) nella lista di tutti gli stop (fermate)
 
                 }
@@ -60,6 +62,15 @@ public class Stops {
         }
 
     } // fine metodo LoadFromFile
+    public Stop searchStop(String searchString)
+    {
+        for (Stop stop : listOfStops) {
+            if (stop.getStopId().equals(searchString) || stop.getStopName().equals(searchString)) {
+                return stop; // restituisce lo stop (fermata) se trovato
+            }
+        }
+        return null; // restituisce null se non trovato
+    }
 
     // stampa tutti gli stop (tutte le fermate)
     public void Print()
