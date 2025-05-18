@@ -162,6 +162,12 @@ public class MainPage {
                 return;
             }
             foundStop.print();
+            Set<BusWaypoint> waypoints = new HashSet<>();
+            waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
+                    painter.setWaypoints(waypoints);
+                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    mapViewer.setOverlayPainter(painter);
             // Implementa questo metodo per cercare lo stop
             // Logica per cercare la fermata e centrare la mappa su di essa
             // Puoi usare GTFSFetcher per ottenere le posizioni delle fermate
@@ -177,7 +183,7 @@ public class MainPage {
     // metodo per aggiornare le posizioni dei bus
     private static void updateBusPositions() {
         List<GeoPosition> busPositions = GTFSFetcher.fetchBusPositions();
-        displayBusPositions(busPositions);
+        //displayBusPositions(busPositions);
     }
     // metodo per visualizzare le posizioni dei bus sulla mappa
     private static void displayBusPositions(List<GeoPosition> positions) {
