@@ -90,5 +90,18 @@ public class StopTimes {
                  break; // esce dal for
         }
     }
+    // restituisce una lista di stoptimes dato uno stopId (fermata)
+    public List<StopTime> getStoptimesFromStopId(String stopId)
+    {
+        List<StopTime> appStopList = new ArrayList<StopTime>();
+
+        for (StopTime elemento : listOfStoptimes)
+        {
+            if (elemento.getStopId().equals(stopId))
+                appStopList.add(elemento);
+        }
+
+        return appStopList;
+    } // fine getStopTimesFromStopId
 
 } // fine della classe

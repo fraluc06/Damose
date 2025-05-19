@@ -184,6 +184,12 @@ public class MainPage {
                 painter.setWaypoints(waypoints);
                 mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                 mapViewer.setOverlayPainter(painter);
+                // qui trova tutti gli stoptime che hanno questa fermata
+                List<StopTime> stopListOfStop = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
+                // scansiona la lista degli stoptims restituiti e li stampa in console per debug
+                for (StopTime elemento : stopListOfStop) {
+                    System.out.println("Trip Id: "+elemento.getTripId()+"StopTime: "+elemento.getStopId() +" StopSequence: "+elemento.getStopSequence()+" ArrivalTime: "+elemento.getArrivalTime()+" Dist_traveled: "+elemento.getShapeDistTraveled() );
+                }
             }
             else {
                 JOptionPane.showMessageDialog(panel,"Fermata non trovata");
