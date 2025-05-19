@@ -9,6 +9,7 @@ import org.jxmapviewer.viewer.WaypointPainter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -185,9 +186,9 @@ public class MainPage {
                 mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                 mapViewer.setOverlayPainter(painter);
                 // qui trova tutti gli stoptime che hanno questa fermata
-                List<StopTime> stopListOfStop = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
+                List<StopTime> stoptimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
                 // scansiona la lista degli stoptims restituiti e li stampa in console per debug
-                for (StopTime elemento : stopListOfStop) {
+                for (StopTime elemento : stoptimeListOfStopId) {
                     System.out.println("Trip Id: "+elemento.getTripId()+"StopTime: "+elemento.getStopId() +" StopSequence: "+elemento.getStopSequence()+" ArrivalTime: "+elemento.getArrivalTime()+" Dist_traveled: "+elemento.getShapeDistTraveled() );
                 }
             }
