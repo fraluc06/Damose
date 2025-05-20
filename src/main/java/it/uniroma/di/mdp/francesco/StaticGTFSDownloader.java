@@ -32,7 +32,8 @@ public class StaticGTFSDownloader {
 
         String remoteMd5 = downloadAsString(md5URL).split("\\s+")[0];
         String localMd5 = calculateMD5(localFile);
-
+//        System.out.println("MD5 remoto: " + remoteMd5);
+//        System.out.println("MD5 locale: " + localMd5);
         return localMd5.equalsIgnoreCase(remoteMd5);
     }
 
@@ -41,18 +42,22 @@ public class StaticGTFSDownloader {
         Files.createDirectories(folderPath);
 
         if (!isUpToDate()) {
-            // Scarica il file ZIP usando HttpClient
+            // Scarica il file ZIP usando HttpClient e lo carica in un file temporaneo
+            Path tempFile = localFile.resolveSibling(localFile.getFileName() + ".tmp");
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(fileURL))
                     .build();
 
             HttpResponse<Path> response = httpClient.send(request,
-                    HttpResponse.BodyHandlers.ofFile(localFile));
+                    HttpResponse.BodyHandlers.ofFile(tempFile));
 
             if (response.statusCode() == 200) {
+                // Sovrascrive il file solo se il download è andato a buon fine
+                Files.move(tempFile, localFile, StandardCopyOption.REPLACE_EXISTING);
                 unzipFile(localFile, folderPath);
-                return true; // dati scaricati e aggiornati
+                return true;
             } else {
+                Files.deleteIfExists(tempFile);
                 throw new IOException("Download failed, status code: " + response.statusCode());
             }
         }
