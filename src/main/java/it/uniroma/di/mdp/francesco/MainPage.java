@@ -10,15 +10,14 @@ import org.jxmapviewer.viewer.WaypointPainter;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.time.LocalTime;
 
 public class MainPage {
     private static JXMapViewer mapViewer;
     private static GlobalParameters gp = new GlobalParameters();
+    private static JPanel leftPanel;
 
     private static Stops allStops;
     private static Routes allRoutes;
@@ -35,11 +34,10 @@ public class MainPage {
             } else {
                 System.out.println("Dati già presenti e aggiornati.");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //carica i dati GTFS
+        // Carica i dati GTFS
         allRoutes = new Routes();
         allRoutes.loadFromFile(gp.getFolderPath() + "/routes.txt");
         allStops = new Stops();
@@ -49,7 +47,6 @@ public class MainPage {
         allStopTimes = new StopTimes();
         allStopTimes.loadFromFile(gp.getFolderPath() + "/stop_times.txt");
 
-
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame(gp.FRAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,8 +54,9 @@ public class MainPage {
             frame.setLayout(new BorderLayout());
 
             JPanel navigationPanel = createNavigationPanel();
-            JPanel leftPanel = createLeftPanel();
+            leftPanel = createLeftPanel();
             leftPanel.setBackground(gp.LEFT_PANEL_COLOR);
+            leftPanel.setVisible(false);
             //leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
             JPanel mainPanel = new JPanel();
@@ -103,7 +101,9 @@ public class MainPage {
         leftButton.addActionListener(e -> panMap(-gp.PAN_DELTA, 0));
         rightButton.addActionListener(e -> panMap(gp.PAN_DELTA, 0));
         ricercaButton.addActionListener(e -> {
-            createLeftPanel();
+            leftPanel.setVisible(!leftPanel.isVisible());
+            leftPanel.revalidate();
+            leftPanel.repaint();
         });
         panel.add(ricercaButton);
         panel.add(upButton);
@@ -170,16 +170,20 @@ public class MainPage {
         panel.add(searchButton);
         panel.add(Box.createVerticalStrut(10));
         panel.add(resultArea);
+
+        JTable tripTable = new JTable();
+        JScrollPane tableScroll = new JScrollPane(tripTable);
+        panel.add(tableScroll);
+
         searchButton.addActionListener(e -> {
             String searchText = searchField.getText().trim().toUpperCase();
             if (searchText.isEmpty()) {
-                JOptionPane.showMessageDialog(panel,"Inserisci il nome o il codice di una fermata");
+                JOptionPane.showMessageDialog(panel, "Inserisci il nome o il codice di una fermata");
                 return;
             }
 
             Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop!=null)
-            {
+            if (foundStop != null) {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
@@ -189,67 +193,72 @@ public class MainPage {
                 mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                 mapViewer.setOverlayPainter(painter);
 
-                // qui trova tutti gli stoptime che hanno questa fermata
                 List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
-                // scansiona la lista degli stoptims restituiti e li stampa in console per debug
                 LocalDateTime adesso = LocalDateTime.now();
-                LocalDateTime oraArrivo ;
-                for (StopTime elemento : stopTimeListOfStopId)
-                {
+                tripTable.setVisible(true);
+                tableScroll.setVisible(true);
+
+                List<Object[]> tripRows = new ArrayList<>();
+                for (StopTime elemento : stopTimeListOfStopId) {
                     try {
                         String appArrivalTime = elemento.getArrivalTime();
-                        String h = appArrivalTime.substring(0,2);
+                        String h = appArrivalTime.substring(0, 2);
                         int h_i = Integer.parseInt(h);
-                        String m = appArrivalTime.substring(3,5);
+                        String m = appArrivalTime.substring(3, 5);
                         int m_i = Integer.parseInt(m);
-                        String s = appArrivalTime.substring(6,8);
+                        String s = appArrivalTime.substring(6, 8);
                         int s_i = Integer.parseInt(s);
-                        // System.out.println("arrival : "+h+":"+m+":"+s);
 
+                        LocalDateTime oraArrivo;
                         switch (h) {
                             case "24":
-                            appArrivalTime = "00"+appArrivalTime.substring(2,8);
-                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),0,m_i,s_i);
-                            oraArrivo = oraArrivo.plusDays(1);
+                                appArrivalTime = "00" + appArrivalTime.substring(2, 8);
+                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 0, m_i, s_i).plusDays(1);
                                 break;
                             case "25":
-                            appArrivalTime = "01"+appArrivalTime.substring(2,8);
-                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),1,m_i,s_i);
-                            oraArrivo = oraArrivo.plusDays(1);
+                                appArrivalTime = "01" + appArrivalTime.substring(2, 8);
+                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 1, m_i, s_i).plusDays(1);
                                 break;
                             case "26":
-                            appArrivalTime = "02"+appArrivalTime.substring(2,8);
-                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),2,m_i,s_i);
-                            oraArrivo = oraArrivo.plusDays(1);
+                                appArrivalTime = "02" + appArrivalTime.substring(2, 8);
+                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 2, m_i, s_i).plusDays(1);
                                 break;
                             default:
-                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),h_i,m_i,s_i);
+                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
                                 break;
                         }
 
-                        if (  (oraArrivo.isBefore(adesso.plusMinutes(30))) && (oraArrivo.isAfter(adesso.minusMinutes(1)))) // se l'ora prevista di arrivo è tra adesso e i prossimi 30 minuti
-                        {
+                        if (oraArrivo.isBefore(adesso.plusMinutes(30)) && oraArrivo.isAfter(adesso.minusMinutes(1))) {
                             Route route = allTrips.getRouteFromTripId(elemento.getTripId());
-                            if (route != null)
-                                System.out.print(route.getRouteId());
-                            System.out.println(" Trip Id: " + elemento.getTripId() + "StopTime: " + elemento.getStopId() + " StopSequence: " + elemento.getStopSequence() + " ArrivalTime: " + elemento.getArrivalTime() + " Dist_traveled: " + elemento.getShapeDistTraveled());
-
+                            tripRows.add(new Object[]{
+                                    route != null ? route.getRouteId() : "",
+                                    elemento.getTripId(),
+                                    elemento.getStopId(),
+                                    elemento.getStopSequence(),
+                                    elemento.getArrivalTime(),
+                                    elemento.getShapeDistTraveled()
+                            });
                         }
-
-
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-
-
-
-
                 }
-            }    // fine trovato uno stop con mome corrispondente
-            else {
-                JOptionPane.showMessageDialog(panel,"Fermata non trovata");
-            }
+                String[] columns = {"Route ID", "Trip Id", "Stop Id", "StopSequence", "ArrivalTime", "Dist_traveled"};
+                Object[][] data = tripRows.toArray(new Object[0][]);
+                tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                });
 
+                tripTable.setCellSelectionEnabled(false);
+                tripTable.setRowSelectionAllowed(false);
+                tripTable.setColumnSelectionAllowed(false);
+                tripTable.setFocusable(false);
+            } else {
+                JOptionPane.showMessageDialog(panel, "Fermata non trovata");
+            }
         });
 
         return panel;
@@ -262,7 +271,7 @@ public class MainPage {
     // metodo per aggiornare le posizioni dei bus
     private static void updateBusPositions() {
         List<GeoPosition> busPositions = GTFSFetcher.fetchBusPositions();
-        //displayBusPositions(busPositions);
+        // displayBusPositions(busPositions);
     }
     // metodo per visualizzare le posizioni dei bus sulla mappa
     private static void displayBusPositions(List<GeoPosition> positions) {
