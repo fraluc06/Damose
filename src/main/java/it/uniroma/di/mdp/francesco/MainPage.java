@@ -206,28 +206,25 @@ public class MainPage {
                         int s_i = Integer.parseInt(s);
                         // System.out.println("arrival : "+h+":"+m+":"+s);
 
-                        if (h.equals("24"))
-                        {
+                        switch (h) {
+                            case "24":
                             appArrivalTime = "00"+appArrivalTime.substring(2,8);
                             oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),0,m_i,s_i);
                             oraArrivo = oraArrivo.plusDays(1);
-                            //System.out.println("Ora arrivo: "+oraArrivo);
-
-                        } else if (h.equals("25"))
-                        {
+                                break;
+                            case "25":
                             appArrivalTime = "01"+appArrivalTime.substring(2,8);
                             oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),1,m_i,s_i);
                             oraArrivo = oraArrivo.plusDays(1);
-                            //System.out.println("Ora arrivo: "+oraArrivo);
-                        } else if (h.equals("26"))
-                        {
+                                break;
+                            case "26":
                             appArrivalTime = "02"+appArrivalTime.substring(2,8);
                             oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),2,m_i,s_i);
                             oraArrivo = oraArrivo.plusDays(1);
-                            //System.out.println("Ora arrivo: "+oraArrivo);
-                        } else
-                        {
+                                break;
+                            default:
                             oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),h_i,m_i,s_i);
+                                break;
                         }
 
                         if (  (oraArrivo.isBefore(adesso.plusMinutes(30))) && (oraArrivo.isAfter(adesso.minusMinutes(1)))) // se l'ora prevista di arrivo è tra adesso e i prossimi 30 minuti
@@ -249,6 +246,9 @@ public class MainPage {
 
                 }
             }    // fine trovato uno stop con mome corrispondente
+            else {
+                JOptionPane.showMessageDialog(panel,"Fermata non trovata");
+            }
 
         });
 
