@@ -104,5 +104,12 @@ public class Trips
     }
 
 
-
+    public Route getRouteIdFromTripId(String tripId) {
+        for (Trip elemento : listOfTrips) {
+            if (elemento.getTripId().equals(tripId)) {
+                return new Route(elemento.getRouteId());
+            }
+        }
+        return null;
+    }
 } // fine class Trips

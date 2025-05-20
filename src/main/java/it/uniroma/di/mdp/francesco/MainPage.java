@@ -9,7 +9,9 @@ import org.jxmapviewer.viewer.WaypointPainter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -86,6 +88,7 @@ public class MainPage {
             }, 0, gp.TIMER_DELAY_MS);
         });
     }
+
     // metodi per la creazione dei bottoni e dell' interfaccia grafica
     private static JPanel createNavigationPanel() {
         JPanel panel = new JPanel();
@@ -116,6 +119,7 @@ public class MainPage {
 
         return panel;
     }
+
     // metodo per creare il pannello di zoom
     private static JPanel createZoomPanel() {
         JPanel panel = new JPanel();
@@ -141,12 +145,14 @@ public class MainPage {
         panel.add(zoomOutButton);
         return panel;
     }
+
     // metodo per creare i bottoni
     private static JButton createButton(String text) {
         JButton button = new JButton(text);
         button.setPreferredSize(gp.BUTTON_SIZE);
         return button;
     }
+
     // metodo per creare il pannello di ricerca
     private static JPanel createLeftPanel() {
         JPanel panel = new JPanel();
@@ -163,6 +169,7 @@ public class MainPage {
         resultArea.setWrapStyleWord(true);       // A capo solo su parole
         resultArea.setOpaque(false);             // Sfondo trasparente
         resultArea.setBorder(null);              // Nessun bordo
+        panel.setPreferredSize(new Dimension(500, 40));
 
         searchField.setPreferredSize(new Dimension(100, 30));
         panel.add(searchField);
@@ -193,65 +200,33 @@ public class MainPage {
                 mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                 mapViewer.setOverlayPainter(painter);
 
-                List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
-                LocalDateTime adesso = LocalDateTime.now();
+                // qui trova tutti gli stoptime che hanno questa fermata e arrivano nei prossimi minutesRange minuti
+                List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId(), 30);
+                // scansiona la lista degli stoptimes restituiti e li stampa in una tabella
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
+                String[] columns = {"Route ID", "Trip Id", "Arrival time","Minutes"};
+                Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
-                List<Object[]> tripRows = new ArrayList<>();
-                for (StopTime elemento : stopTimeListOfStopId) {
-                    try {
-                        String appArrivalTime = elemento.getArrivalTime();
-                        String h = appArrivalTime.substring(0, 2);
-                        int h_i = Integer.parseInt(h);
-                        String m = appArrivalTime.substring(3, 5);
-                        int m_i = Integer.parseInt(m);
-                        String s = appArrivalTime.substring(6, 8);
-                        int s_i = Integer.parseInt(s);
-
-                        LocalDateTime oraArrivo;
-                        switch (h) {
-                            case "24":
-                                appArrivalTime = "00" + appArrivalTime.substring(2, 8);
-                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 0, m_i, s_i).plusDays(1);
-                                break;
-                            case "25":
-                                appArrivalTime = "01" + appArrivalTime.substring(2, 8);
-                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 1, m_i, s_i).plusDays(1);
-                                break;
-                            case "26":
-                                appArrivalTime = "02" + appArrivalTime.substring(2, 8);
-                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 2, m_i, s_i).plusDays(1);
-                                break;
-                            default:
-                                oraArrivo = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
-                                break;
-                        }
-
-                        if (oraArrivo.isBefore(adesso.plusMinutes(30)) && oraArrivo.isAfter(adesso.minusMinutes(1))) {
-                            Route route = allTrips.getRouteFromTripId(elemento.getTripId());
-                            tripRows.add(new Object[]{
-                                    route != null ? route.getRouteId() : "",
-                                    elemento.getTripId(),
-                                    elemento.getStopId(),
-                                    elemento.getStopSequence(),
-                                    elemento.getArrivalTime(),
-                                    elemento.getShapeDistTraveled()
-                            });
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
+                    LocalDateTime ora = LocalDateTime.now();
+                    // Calcola minuti rimanenti all'arrivo
+                    StopTime st = stopTimeListOfStopId.get(i);
+                    Duration differenza = Duration.between(ora, st.getArrivalDateTime());
+                    long minuti = differenza.toMinutes();
+                    Route r = allTrips.getRouteFromTripId(st.getTripId());
+                    data[i][0] = r.getRouteId();
+                    data[i][1] = st.getTripId();
+                    data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
+                    data[i][3] = minuti;
                 }
-                String[] columns = {"Route ID", "Trip Id", "Stop Id", "StopSequence", "ArrivalTime", "Dist_traveled"};
-                Object[][] data = tripRows.toArray(new Object[0][]);
+
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
                     @Override
                     public boolean isCellEditable(int row, int column) {
                         return false;
                     }
                 });
-
                 tripTable.setCellSelectionEnabled(false);
                 tripTable.setRowSelectionAllowed(false);
                 tripTable.setColumnSelectionAllowed(false);
@@ -263,16 +238,19 @@ public class MainPage {
 
         return panel;
     }
+
     // metodo per spostare la mappa
     private static void panMap(double deltaLon, double deltaLat) {
         GeoPosition pos = mapViewer.getCenterPosition();
         mapViewer.setCenterPosition(new GeoPosition(pos.getLatitude() + deltaLat, pos.getLongitude() + deltaLon));
     }
+
     // metodo per aggiornare le posizioni dei bus
     private static void updateBusPositions() {
         List<GeoPosition> busPositions = GTFSFetcher.fetchBusPositions();
         // displayBusPositions(busPositions);
     }
+
     // metodo per visualizzare le posizioni dei bus sulla mappa
     private static void displayBusPositions(List<GeoPosition> positions) {
         Set<BusWaypoint> waypoints = new HashSet<>();

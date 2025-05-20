@@ -3,6 +3,7 @@ package it.uniroma.di.mdp.francesco;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class StopTimes {
     private List<StopTime> listOfStoptimes; //
 
     public StopTimes() {
-       listOfStoptimes = new ArrayList<StopTime>();
+        listOfStoptimes = new ArrayList<StopTime>();
     }
 
 
@@ -81,15 +82,16 @@ public class StopTimes {
         for (StopTime elemento : listOfStoptimes)
 
         {
-             if (elemento.getTripId().equals(tripId))
-             {
-               trovatoPrimo = true; // se trovato il trip
+            if (elemento.getTripId().equals(tripId))
+            {
+                trovatoPrimo = true; // se trovato il trip
                 System.out.println("Trip Id: "+elemento.getTripId()+" StopTime: "+elemento.getStopId() +" StopSequence: "+elemento.getStopSequence()+" ArrivalTime: "+elemento.getArrivalTime()+" Dist_traveled: "+elemento.getShapeDistTraveled() );
-             }
-             else if (trovatoPrimo == true) // se lo aveva trovato ed ora è diventato diverso, esci dal ciclo di scansione
-                 break; // esce dal for
+            }
+            else if (trovatoPrimo == true) // se lo aveva trovato ed ora è diventato diverso, esci dal ciclo di scansione
+                break; // esce dal for
         }
     }
+
     // restituisce una lista di stoptimes dato uno stopId (fermata)
     public List<StopTime> getStoptimesFromStopId(String stopId)
     {
@@ -103,5 +105,30 @@ public class StopTimes {
 
         return appStopList;
     } // fine getStopTimesFromStopId
+
+    // restituisce una lista di stoptimes dato uno stopId (fermata) che arriveranno alla fermata nei prossimi minuti (minutesRange)
+    public List<StopTime> getStoptimesFromStopId(String stopId,long minutesRange)
+    {
+        List<StopTime> appStopList = new ArrayList<StopTime>();
+        LocalDateTime adesso = LocalDateTime.now();
+
+        for (StopTime elemento : listOfStoptimes)
+        {
+            if (elemento.getStopId().equals(stopId)) // se è uno stopId che cerco
+            {
+                if (  (elemento.getArrivalDateTime().isBefore(adesso.plusMinutes(minutesRange))) && (elemento.getArrivalDateTime().isAfter(adesso.minusMinutes(1)))) // se l'ora prevista di arrivo è tra adesso e i prossimi 30 minuti
+                {
+                    appStopList.add(elemento);
+                }
+
+
+
+            }
+        }
+
+        return appStopList;
+    } // fine getStopTimesFromStopId con minutesRange
+
+
 
 } // fine della classe
