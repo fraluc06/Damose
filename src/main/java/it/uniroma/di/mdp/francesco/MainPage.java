@@ -9,10 +9,12 @@ import org.jxmapviewer.viewer.WaypointPainter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.time.LocalTime;
 
 public class MainPage {
     private static JXMapViewer mapViewer;
@@ -170,13 +172,14 @@ public class MainPage {
         panel.add(resultArea);
         searchButton.addActionListener(e -> {
             String searchText = searchField.getText().trim().toUpperCase();
-                    if (searchText.isEmpty()) {
+            if (searchText.isEmpty()) {
                 JOptionPane.showMessageDialog(panel,"Inserisci il nome o il codice di una fermata");
                 return;
             }
 
             Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop != null) {
+            if (foundStop!=null)
+            {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
@@ -185,16 +188,68 @@ public class MainPage {
                 painter.setWaypoints(waypoints);
                 mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
                 mapViewer.setOverlayPainter(painter);
+
                 // qui trova tutti gli stoptime che hanno questa fermata
-                List<StopTime> stoptimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
+                List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId());
                 // scansiona la lista degli stoptims restituiti e li stampa in console per debug
-                for (StopTime elemento : stoptimeListOfStopId) {
-                    System.out.println("Trip Id: "+elemento.getTripId()+"StopTime: "+elemento.getStopId() +" StopSequence: "+elemento.getStopSequence()+" ArrivalTime: "+elemento.getArrivalTime()+" Dist_traveled: "+elemento.getShapeDistTraveled() );
+                LocalDateTime adesso = LocalDateTime.now();
+                LocalDateTime oraArrivo ;
+                for (StopTime elemento : stopTimeListOfStopId)
+                {
+                    try {
+                        String appArrivalTime = elemento.getArrivalTime();
+                        String h = appArrivalTime.substring(0,2);
+                        int h_i = Integer.parseInt(h);
+                        String m = appArrivalTime.substring(3,5);
+                        int m_i = Integer.parseInt(m);
+                        String s = appArrivalTime.substring(6,8);
+                        int s_i = Integer.parseInt(s);
+                        // System.out.println("arrival : "+h+":"+m+":"+s);
+
+                        if (h.equals("24"))
+                        {
+                            appArrivalTime = "00"+appArrivalTime.substring(2,8);
+                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),0,m_i,s_i);
+                            oraArrivo = oraArrivo.plusDays(1);
+                            //System.out.println("Ora arrivo: "+oraArrivo);
+
+                        } else if (h.equals("25"))
+                        {
+                            appArrivalTime = "01"+appArrivalTime.substring(2,8);
+                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),1,m_i,s_i);
+                            oraArrivo = oraArrivo.plusDays(1);
+                            //System.out.println("Ora arrivo: "+oraArrivo);
+                        } else if (h.equals("26"))
+                        {
+                            appArrivalTime = "02"+appArrivalTime.substring(2,8);
+                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),2,m_i,s_i);
+                            oraArrivo = oraArrivo.plusDays(1);
+                            //System.out.println("Ora arrivo: "+oraArrivo);
+                        } else
+                        {
+                            oraArrivo =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),h_i,m_i,s_i);
+                        }
+
+                        if (  (oraArrivo.isBefore(adesso.plusMinutes(30))) && (oraArrivo.isAfter(adesso.minusMinutes(1)))) // se l'ora prevista di arrivo è tra adesso e i prossimi 30 minuti
+                        {
+                            Route route = allTrips.getRouteFromTripId(elemento.getTripId());
+                            if (route != null)
+                                System.out.print(route.getRouteId());
+                            System.out.println(" Trip Id: " + elemento.getTripId() + "StopTime: " + elemento.getStopId() + " StopSequence: " + elemento.getStopSequence() + " ArrivalTime: " + elemento.getArrivalTime() + " Dist_traveled: " + elemento.getShapeDistTraveled());
+
+                        }
+
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+
+
+
                 }
-            }
-            else {
-                JOptionPane.showMessageDialog(panel,"Fermata non trovata");
-            }
+            }    // fine trovato uno stop con mome corrispondente
+
         });
 
         return panel;

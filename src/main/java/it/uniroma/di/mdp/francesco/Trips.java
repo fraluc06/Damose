@@ -70,7 +70,7 @@ public class Trips
 
     } // fine metodo LoadFromFile
 
-   // stampa tutti i trip di tutti le routes
+    // stampa tutti i trip di tutti le routes
     public void Print()
     {
         for (Trip elemento : listOfTrips) {
@@ -83,9 +83,26 @@ public class Trips
     {
         for (Trip elemento : listOfTrips) {
             if (elemento.getRouteId().equals(routeId))
-             System.out.println("Trip: "+elemento.getTripId()+" Route: "+elemento.getRouteId()+" Headsign: "+elemento.getTripHeadSign());
+                System.out.println("Trip: "+elemento.getTripId()+" Route: "+elemento.getRouteId()+" Headsign: "+elemento.getTripHeadSign());
 
         }
     }
+
+    // restituisce la route corrispondente al tripId
+    public Route getRouteFromTripId (String tripId)
+    {
+
+        for (Trip elemento : listOfTrips)
+        {
+            if (elemento.getTripId().equals(tripId))
+            {
+                Route r = new Route(elemento.getRouteId());
+                return r;
+            }
+        }
+        return null;
+    }
+
+
 
 } // fine class Trips
