@@ -92,7 +92,7 @@ public class MainPage {
     private static JPanel createNavigationPanel() {
         JPanel panel = new JPanel();
         panel.setBackground(gp.NAVIGATION_PANEL_COLOR);
-        JButton ricercaButton = new JButton("Ricerca fermata");
+        JButton ricercaButton = new JButton("Ricerca");
         JButton upButton = createButton("↑");
         JButton downButton = createButton("↓");
         JButton leftButton = createButton("←");
@@ -182,6 +182,12 @@ public class MainPage {
         JScrollPane tableScroll = new JScrollPane(tripTable);
         panel.add(tableScroll);
 
+        searchField.addActionListener(e -> {
+            if (leftPanel.isVisible()) {
+                searchButton.doClick();
+            }
+        });
+
         searchButton.addActionListener(e -> {
             String searchText = searchField.getText().trim().toUpperCase();
             if (searchText.isEmpty()) {
@@ -205,7 +211,7 @@ public class MainPage {
                 // scansiona la lista degli stoptimes restituiti e li stampa in una tabella
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Route ID", "Trip Id", "Arrival time","Minutes"};
+                String[] columns = {"Linea", "Corsa", "Orario di arrivo","Attesa (minuti)"};
                 Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
                 for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
