@@ -1,10 +1,10 @@
 # 🚌 Damose
 
-**Damose** è una **desktop app** sviluppata in **Java Swing** per monitorare in tempo reale gli autobus di Roma.
+**Damose** è una **desktop app** sviluppata in **Java Swing** per monitorare il trasporto pubblico di Roma.
 
 ## 🚀 Funzionalità
 
-- Tracciamento in tempo reale dei mezzi pubblici ATAC
+- Tracciamento statico o in tempo reale dei mezzi pubblici ATAC
 - Interfaccia desktop leggera e intuitiva
 - Ricerca per linea o fermata
 - Visualizzazione delle stime di arrivo
@@ -20,25 +20,28 @@
 - JDK 17 o superiore
 - Connessione a Internet attiva
 
-## ▶️ Esecuzione
-
-Compila ed esegui l'app con un solo comando:
-
-```bash
-javac -d out src/com/damose/*.java && java -cp out com.damose.Main
-```
-
-Oppure, se utilizzi un IDE (come IntelliJ IDEA o Eclipse), importa il progetto come applicazione Java e avvia il file `Main.java`.
-
 ## 📁 Struttura del progetto
 
 ```
-damose/
+Damose/
+...
 ├── src/
-│   └── com/damose/
-│       ├── Main.java
-│       ├── TrackerUI.java
+│   └── it/uniroma/di/mdp/francesco/damose/
+│       ├── BusWaypoint.java
+│       ├── GlobalParameters.java
+│       ├── GTFSFetcher.java
+│       ├── MainPage.java
+│       ├── Route.java
+│       ├── Routes.java
+│        ├── StaticGTFSDownloader.java
+│       ├── Stop.java
+│       ├── Stops.java
+│       ├── StopTime.java
+│       ├── StopTimes.java
+│       ├── Trip.java
+│       ├── Trips.java
 │       └── BusService.java
+├── LICENSE.txt
 ├── README.md
 └── ...
 ```
@@ -49,4 +52,4 @@ Rilasciato sotto licenza **MIT** – vedi il file [LICENSE](LICENSE) per i detta
 
 ---
 
-> Made with ❤️ in Rome
+> Made with ❤️ in Rome by Francesco Lucarelli ([**_fraluc06_**](https://github.com/fraluc06))
