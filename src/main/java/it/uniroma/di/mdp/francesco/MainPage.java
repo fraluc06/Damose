@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -159,6 +158,7 @@ public class MainPage {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         JTextField searchField = new JTextField(10);
         searchField.setMaximumSize(new Dimension(200, 30));
+        searchField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         JButton searchButton = new JButton("Cerca");
         JTextArea resultArea = new JTextArea();
         resultArea.setEditable(false);           // Disattiva modifica

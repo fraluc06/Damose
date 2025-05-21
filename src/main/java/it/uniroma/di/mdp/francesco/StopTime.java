@@ -60,41 +60,31 @@ public class StopTime {
             LocalDateTime adesso = LocalDateTime.now();
 
 
-            if (h.equals("24"))
-            {
-
-                arrivalDateTime =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),0,m_i,s_i);
-                arrivalDateTime = arrivalDateTime.plusDays(1);
-
-
-            } else if (h.equals("25"))
-            {
-
-                arrivalDateTime =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),1,m_i,s_i);
-                arrivalDateTime = arrivalDateTime.plusDays(1);
-
-            } else if (h.equals("26"))
-            {
-
-                arrivalDateTime =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),2,m_i,s_i);
-                arrivalDateTime = arrivalDateTime.plusDays(1);
-
-            }
-            else if (h.equals("27"))
-            {
-
-                arrivalDateTime =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),3,m_i,s_i);
-                arrivalDateTime = arrivalDateTime.plusDays(1);
-
-            }
-            else
-            {
-                arrivalDateTime =  LocalDateTime.of(adesso.getYear(),adesso.getMonthValue(),adesso.getDayOfMonth(),h_i,m_i,s_i);
-            }
+           switch (h) {
+                    case "24":
+                        arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 0, m_i, s_i)
+                                .plusDays(1);
+                        break;
+                    case "25":
+                        arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 1, m_i, s_i)
+                                .plusDays(1);
+                        break;
+                    case "26":
+                        arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 2, m_i, s_i)
+                                .plusDays(1);
+                        break;
+                    case "27":
+                        arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), 3, m_i, s_i)
+                                .plusDays(1);
+                        break;
+                    default:
+                        arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
+                        break;
+                }
 
         } catch (Exception e) {
 
-            System.out.println("Ora arrivalTime scartato: "+arrivalTime);
+            //System.out.println("Ora arrivalTime scartato: "+arrivalTime);
         }
 
 
