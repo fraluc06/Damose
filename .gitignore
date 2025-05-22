@@ -1,6 +1,11 @@
 .idea
 .gradle
 build
+# Ignora tutto dentro rome_static_gtfs
+rome_static_gtfs/*
+
+# Ma NON ignorare i file .gitkeep
+!rome_static_gtfs/.gitkeep
 
 ### Mac OS ###
 .DS_Store
