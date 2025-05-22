@@ -65,4 +65,17 @@ public class Routes
 
 
     } // fine del metodo LoadFromFile
+
+    public Route searchRoute(String searchString)
+    {
+        for (Route route : listOfRoutes) {
+            if (route.getRouteId().equals(searchString)) {
+                return route; // restituisce lo stop (fermata) se trovato
+            }
+        }
+        return null; // restituisce null se non trovato
+    }
+
+
+
 }

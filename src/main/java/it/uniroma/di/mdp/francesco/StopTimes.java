@@ -129,6 +129,30 @@ public class StopTimes {
         return appStopList;
     } // fine getStopTimesFromStopId con minutesRange
 
+   // AGGIUNTO 22-05-25
+    // restituisce una lista di stoptimes dato uno tripId (corsa) che arriveranno alla fermata nei prossimi minuti (minutesRange)
+    public StopTime getStoptimesFromTripId(String tripId,long minutesRange)
+    {
+        //List<StopTime> appStopList = new ArrayList<StopTime>();
+        LocalDateTime adesso = LocalDateTime.now();
+
+        for (StopTime elemento : listOfStoptimes)
+        {
+            if (elemento.getTripId().equals(tripId)) // se è un tripId che cerco
+            {
+                if (  (elemento.getArrivalDateTime().isBefore(adesso.plusMinutes(minutesRange))) && (elemento.getArrivalDateTime().isAfter(adesso.minusMinutes(1)))) // se l'ora prevista di arrivo è tra adesso e i prossimi 30 minuti
+                {
+                    //appStopList.add(elemento);
+                    return elemento;
+                }
+
+
+
+            }
+        }
+
+        return null;
+    } // fine getStopTimesFromStopId con minutesRange
 
 
 } // fine della classe

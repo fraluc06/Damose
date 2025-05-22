@@ -88,28 +88,35 @@ public class Trips
         }
     }
 
-    // restituisce la route corrispondente al tripId
-    public Route getRouteFromTripId (String tripId)
+    // restituisce la routeId corrispondente al tripId
+    public String getRouteIdFromTripId (String tripId)
     {
 
         for (Trip elemento : listOfTrips)
         {
             if (elemento.getTripId().equals(tripId))
             {
-                Route r = new Route(elemento.getRouteId());
-                return r;
+                return elemento.getRouteId();
+
             }
         }
         return null;
     }
 
+    // restituisce la lista dei trip id della route specificata
+    public List<Trip> getTripListFromRouteId(String routeId)
+    {
 
-    public Route getRouteIdFromTripId(String tripId) {
-        for (Trip elemento : listOfTrips) {
-            if (elemento.getTripId().equals(tripId)) {
-                return new Route(elemento.getRouteId());
+        List<Trip> appTripList = new ArrayList<Trip>();
+        for (Trip elemento : listOfTrips)
+        {
+            if (elemento.getRouteId().equals(routeId)) // se è un tripid del route che cerco
+            {  appTripList.add(elemento);
+
             }
         }
-        return null;
+
+        return appTripList;
     }
+
 } // fine class Trips
