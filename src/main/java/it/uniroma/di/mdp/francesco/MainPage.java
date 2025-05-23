@@ -198,8 +198,7 @@ public class MainPage {
             Route foundRoute;
 
             Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop != null)
-            {
+            if (foundStop != null) {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
@@ -214,7 +213,7 @@ public class MainPage {
                 // scansiona la lista degli stoptimes restituiti e li stampa in una tabella
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Linea", "Corsa", "Orario di arrivo","Attesa (minuti)", "Tipologia"};
+                String[] columns = {"Linea", "Corsa", "Orario di arrivo", "Attesa (minuti)", "Tipologia"};
                 Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
                 for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
@@ -225,11 +224,12 @@ public class MainPage {
                     long minuti = differenza.toMinutes();
                     String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
                     Route curRoute = allRoutes.searchRoute(curRouteId);
-                    data[i][0] = allTrips.getRouteIdFromTripId(st.getTripId());
+                    data[i][0] = curRouteId;
                     data[i][1] = st.getTripId();
                     data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
                     data[i][3] = minuti;
                     data[i][4] = curRoute.getRouteTypeDesc();
+
                 }
 
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
@@ -242,19 +242,17 @@ public class MainPage {
                 tripTable.setRowSelectionAllowed(false);
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
-            }
-            else if  ((foundRoute = allRoutes.searchRoute(searchText)) != null) // altrimenti ricerca tra le linee
+            } else if ((foundRoute = allRoutes.searchRoute(searchText)) != null) // altrimenti ricerca tra le linee
             {
                 resultArea.setText("Linea trovata:\n" + foundRoute.getRouteId() + "\n");
                 // qui trova tutti i trips della linea trovata
                 List<StopTime> stopTimeListOfTripId = new ArrayList<StopTime>();
-                 // DA QUI - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
+                // DA QUI - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
                 List<Trip> tripsOfRoute = allTrips.getTripListFromRouteId(foundRoute.getRouteId());
-                for (Trip elemento : tripsOfRoute)
-                {
+                for (Trip elemento : tripsOfRoute) {
                     //String cur_tripId = "1#952-19"; // scansiona la lista dei trip della linea
 
-                    StopTime appST = allStopTimes.getStoptimesFromTripId( elemento.getTripId(), 1);
+                    StopTime appST = allStopTimes.getStoptimesFromTripId(elemento.getTripId(), 1);
                     if (appST != null)
                         stopTimeListOfTripId.add(appST);
                 }
@@ -263,21 +261,19 @@ public class MainPage {
 
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Corsa", "Fermata",  "Orario previsto"};
+                String[] columns = {"Corsa", "Fermata", "Orario previsto", "Tipologia"};
                 // crea la tabella con i dati
                 Object[][] data = new Object[stopTimeListOfTripId.size()][columns.length];
-                System.out.println("size= "+stopTimeListOfTripId.size());
-                for (int i = 0; i < stopTimeListOfTripId.size(); i++)
-                {
-                    StopTime st =  stopTimeListOfTripId.get(i);
+                System.out.println("size= " + stopTimeListOfTripId.size());
+                for (int i = 0; i < stopTimeListOfTripId.size(); i++) {
+                    StopTime st = stopTimeListOfTripId.get(i);
+                    //data[i][0] = foundRoute.getRouteId();
                     String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
                     Route curRoute = allRoutes.searchRoute(curRouteId);
-                    //data[i][0] = foundRoute.getRouteId();
                     data[i][0] = st.getTripId();
                     data[i][1] = st.getStopId();
                     data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
                     data[i][3] = curRoute.getRouteTypeDesc();
-
                 }
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
                     @Override
@@ -291,11 +287,7 @@ public class MainPage {
                 tripTable.setFocusable(false);
 
 
-
-            }
-
-
-            else {
+            } else {
                 JOptionPane.showMessageDialog(panel, "Nessuna corrispondenza trovata");
             }
         });
