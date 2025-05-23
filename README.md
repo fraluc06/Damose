@@ -48,7 +48,7 @@ Damose/
 
 ## 📃 Licenza
 
-Rilasciato sotto licenza **MIT** – vedi il file [LICENSE](LICENSE) per i dettagli.
+Rilasciato sotto licenza **GPLv3** – vedi il file [LICENSE](LICENSE.txt) per i dettagli.
 
 ---
 
