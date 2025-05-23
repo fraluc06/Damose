@@ -103,6 +103,21 @@ public class Trips
         return null;
     }
 
+    // restituisce la trip corrispondente al tripId
+    public Trip searchTrip(String tripId)
+    {
+
+        for (Trip elemento : listOfTrips)
+        {
+            if (elemento.getTripId().equals(tripId))
+            {
+                return elemento;
+
+            }
+        }
+        return null;
+    }
+
     // restituisce la lista dei trip id della route specificata
     public List<Trip> getTripListFromRouteId(String routeId)
     {
