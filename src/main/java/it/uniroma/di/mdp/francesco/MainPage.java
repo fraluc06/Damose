@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Timer;
 
 public class MainPage {
+    private static final GlobalParameters gp = new GlobalParameters();
     private static JXMapViewer mapViewer;
-    private static GlobalParameters gp = new GlobalParameters();
     private static JPanel leftPanel;
 
     private static Stops allStops;
@@ -258,10 +258,10 @@ public class MainPage {
                 }
                 // A QUI  - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
 
-
+                List<GeoPosition> stopPositions = new ArrayList<>();
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Corsa", "Fermata", "Orario previsto", "Tipologia"};
+                String[] columns = {"Corsa", "Direzione", "Fermata", "Orario previsto", "Tipologia"};
                 // crea la tabella con i dati
                 Object[][] data = new Object[stopTimeListOfTripId.size()][columns.length];
                 System.out.println("size= " + stopTimeListOfTripId.size());
@@ -270,10 +270,19 @@ public class MainPage {
                     //data[i][0] = foundRoute.getRouteId();
                     String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
                     Route curRoute = allRoutes.searchRoute(curRouteId);
+                    Trip curTrip = allTrips.searchTrip(st.getTripId());
+                    Stop curStop = allStops.searchStop(st.getStopId()); // lo deve mettere anche nei waypoint
+                    // *********** Crea i waypoint per le fermate
+
+                    stopPositions.add(new GeoPosition(Double.valueOf(curStop.getStopLat()), Double.valueOf(curStop.getStopLon())));
+
+                    // **********
                     data[i][0] = st.getTripId();
-                    data[i][1] = st.getStopId();
-                    data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
-                    data[i][3] = curRoute.getRouteTypeDesc();
+                    data[i][1] = curTrip.getTripHeadSign();
+                    data[i][2] = curStop.getStopName();
+                    data[i][3] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
+                    data[i][4] = curRoute.getRouteTypeDesc();
+
                 }
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
                     @Override
@@ -286,6 +295,7 @@ public class MainPage {
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
 
+                displayBusPositions(stopPositions);
 
             } else {
                 JOptionPane.showMessageDialog(panel, "Nessuna corrispondenza trovata");
