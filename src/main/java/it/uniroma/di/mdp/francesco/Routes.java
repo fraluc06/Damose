@@ -34,7 +34,8 @@ public class Routes {
                 }
                 String[] fields = line.split(delimiter);
                 String routeId = fields[0];
-                Route route = new Route(routeId);
+                String routeType = fields[4];
+                Route route = new Route(routeId,routeType);
                 addRoute(route);
             }
         } catch (IOException e) {

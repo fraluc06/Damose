@@ -214,7 +214,7 @@ public class MainPage {
                 // scansiona la lista degli stoptimes restituiti e li stampa in una tabella
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Linea", "Corsa", "Orario di arrivo","Attesa (minuti)"};
+                String[] columns = {"Linea", "Corsa", "Orario di arrivo","Attesa (minuti)", "Tipologia"};
                 Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
                 for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
@@ -223,10 +223,13 @@ public class MainPage {
                     StopTime st = stopTimeListOfStopId.get(i);
                     Duration differenza = Duration.between(ora, st.getArrivalDateTime());
                     long minuti = differenza.toMinutes();
+                    String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
+                    Route curRoute = allRoutes.searchRoute(curRouteId);
                     data[i][0] = allTrips.getRouteIdFromTripId(st.getTripId());
                     data[i][1] = st.getTripId();
                     data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
                     data[i][3] = minuti;
+                    data[i][4] = curRoute.getRouteTypeDesc();
                 }
 
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
@@ -267,10 +270,13 @@ public class MainPage {
                 for (int i = 0; i < stopTimeListOfTripId.size(); i++)
                 {
                     StopTime st =  stopTimeListOfTripId.get(i);
+                    String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
+                    Route curRoute = allRoutes.searchRoute(curRouteId);
                     //data[i][0] = foundRoute.getRouteId();
                     data[i][0] = st.getTripId();
                     data[i][1] = st.getStopId();
                     data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
+                    data[i][3] = curRoute.getRouteTypeDesc();
 
                 }
                 tripTable.setModel(new javax.swing.table.DefaultTableModel(data, columns) {
