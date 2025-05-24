@@ -5,7 +5,6 @@ import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.viewer.*;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ public class MainPage {
     private static JPanel leftPanel;
 
     private static Stops allStops;
-    private static Routes allRoutes;
+    public static Routes allRoutes; // pubblica per uso nel fetcher
     private static Trips allTrips;
     private static StopTimes allStopTimes;
 
@@ -36,7 +35,7 @@ public class MainPage {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Carica i dati GTFS
+        // Carica i dati GTFS STATICI
         allRoutes = new Routes();
         allRoutes.loadFromFile(gp.getFolderPath() + "/routes.txt");
         allStops = new Stops();
@@ -56,7 +55,6 @@ public class MainPage {
             leftPanel = createLeftPanel();
             leftPanel.setBackground(gp.LEFT_PANEL_COLOR);
             leftPanel.setVisible(false);
-            navigationPanel.setOpaque(false);
             //leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
             JPanel mainPanel = new JPanel();
@@ -91,7 +89,7 @@ public class MainPage {
     private static JPanel createNavigationPanel() {
         JPanel panel = new JPanel();
         panel.setBackground(gp.NAVIGATION_PANEL_COLOR);
-        JButton SearchButton = new JButton("Ricerca");
+        JButton searchButton = new JButton("Ricerca");
         JButton upButton = createButton("↑");
         JButton downButton = createButton("↓");
         JButton leftButton = createButton("←");
@@ -101,25 +99,24 @@ public class MainPage {
         downButton.addActionListener(e -> panMap(0, -gp.PAN_DELTA));
         leftButton.addActionListener(e -> panMap(-gp.PAN_DELTA, 0));
         rightButton.addActionListener(e -> panMap(gp.PAN_DELTA, 0));
-        SearchButton.addActionListener(e -> {
+        searchButton.addActionListener(e -> {
             leftPanel.setVisible(!leftPanel.isVisible());
             leftPanel.revalidate();
             leftPanel.repaint();
             if (leftPanel.isVisible()) {
-                SearchButton.setText("Chiudi ricerca");
+                searchButton.setText("Chiudi ricerca");
             }
             else {
-                SearchButton.setText("Ricerca");
+                searchButton.setText("Ricerca");
             }
         });
-        panel.add(SearchButton);
+        panel.add(searchButton);
         panel.add(upButton);
         panel.add(downButton);
         panel.add(leftButton);
         panel.add(rightButton);
 
         JPanel zoomPanel = createZoomPanel();
-        zoomPanel.setOpaque(false);
         panel.add(zoomPanel);
 
         return panel;
@@ -279,7 +276,7 @@ public class MainPage {
                 String[] columns = {"Corsa", "Direzione","Fermata",  "Orario previsto","Tipologia"};
                 // crea la tabella con i dati
                 Object[][] data = new Object[stopTimeListOfTripId.size()][columns.length];
-                System.out.println("size= "+stopTimeListOfTripId.size());
+                //System.out.println("size= "+stopTimeListOfTripId.size());
                 for (int i = 0; i < stopTimeListOfTripId.size(); i++)
                 {
                     StopTime st =  stopTimeListOfTripId.get(i);
@@ -332,8 +329,8 @@ public class MainPage {
 
     // metodo per aggiornare le posizioni dei bus
     private static void updateBusPositions() {
-        List<GeoPosition> busPositions = GTFSFetcher.fetchBusPositions();
-        // displayBusPositions(busPositions);
+        Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions();
+        displayBusWaypoints(busWaypoints);
     }
 
     // metodo per visualizzare le posizioni dei bus sulla mappa - SOSTITUITA DALLA displayBusWaypoints
