@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 
 public class StopTime {
 
-    private String tripId;  // id corsa
-    private String stopId;  // id fermata
-    private String stopSequence;  // numero progressivo della fermata nel trip
-    private String arrivalTime;  // orario di arrivo alla fermata (formato stringa originale)
+    private final String tripId;  // id corsa
+    private final String stopId;  // id fermata
+    private final String stopSequence;  // numero progressivo della fermata nel trip
+    private final String arrivalTime;  // orario di arrivo alla fermata (formato stringa originale)
 
 
 
     private LocalDateTime  arrivalDateTime; // orario di arrivo alla fermata in formato localDateTime
-    private String shapeDistTraveled;  // distanza percorsa dal capolinea (ok ?)
+    private final String shapeDistTraveled;  // distanza percorsa dal capolinea (ok ?)
 
     // getter delle variabili
     public String getTripId() {

@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class StopTimes {
-    private List<StopTime> listOfStoptimes;
-    private Map<String, List<StopTime>> stopIdMap;
-    private Map<String, List<StopTime>> tripIdMap;
+    private final List<StopTime> listOfStoptimes;
+    private final Map<String, List<StopTime>> stopIdMap;
+    private final Map<String, List<StopTime>> tripIdMap;
 
     public StopTimes() {
         listOfStoptimes = new ArrayList<>();

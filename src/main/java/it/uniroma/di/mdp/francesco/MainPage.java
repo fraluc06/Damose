@@ -14,7 +14,7 @@ import java.util.Timer;
 
 public class MainPage {
     private static JXMapViewer mapViewer;
-    private static GlobalParameters gp = new GlobalParameters();
+    private static final GlobalParameters gp = new GlobalParameters();
     private static JPanel leftPanel;
 
     private static Stops allStops;

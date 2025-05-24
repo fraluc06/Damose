@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Stops {
 
-    private List<Stop> listOfStops; //
+    private final List<Stop> listOfStops; //
 
     // costruttore
     public Stops() {

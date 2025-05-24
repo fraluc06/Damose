@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
     //private final Icon icon;
-    private  Map<String, Icon > mappaIcon;
+    private final Map<String, Icon > mappaIcon;
     public CustomWaypointRenderer(Icon icon) {
         //this.icon = icon;
         // crea una mappa per le differenti icone
