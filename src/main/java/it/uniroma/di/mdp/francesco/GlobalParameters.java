@@ -9,8 +9,8 @@ public class GlobalParameters {
 
     // Parametri costanti pubblici statici
     public final String FRAME_TITLE = "Rome Bus Tracker";
-    public final int FRAME_WIDTH = 1000;
-    public final int FRAME_HEIGHT = 600;
+    public final int FRAME_WIDTH = 1300;
+    public final int FRAME_HEIGHT = 800;
     public final Color NAVIGATION_PANEL_COLOR = new Color(200, 200, 200);
     public final Color LEFT_PANEL_COLOR = Color.WHITE;
     public final double ROME_CENTER_LAT = 41.8868;
@@ -47,6 +47,6 @@ public class GlobalParameters {
     }
 
     public GlobalParameters() {
-        mapZoom = 4;
+        mapZoom = 3;
     }
 }

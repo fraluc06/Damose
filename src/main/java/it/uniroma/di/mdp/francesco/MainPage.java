@@ -5,6 +5,7 @@ import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.viewer.*;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -55,6 +56,7 @@ public class MainPage {
             leftPanel = createLeftPanel();
             leftPanel.setBackground(gp.LEFT_PANEL_COLOR);
             leftPanel.setVisible(false);
+            navigationPanel.setOpaque(false);
             //leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
             JPanel mainPanel = new JPanel();
@@ -89,7 +91,7 @@ public class MainPage {
     private static JPanel createNavigationPanel() {
         JPanel panel = new JPanel();
         panel.setBackground(gp.NAVIGATION_PANEL_COLOR);
-        JButton ricercaButton = new JButton("Ricerca");
+        JButton SearchButton = new JButton("Ricerca");
         JButton upButton = createButton("↑");
         JButton downButton = createButton("↓");
         JButton leftButton = createButton("←");
@@ -99,18 +101,25 @@ public class MainPage {
         downButton.addActionListener(e -> panMap(0, -gp.PAN_DELTA));
         leftButton.addActionListener(e -> panMap(-gp.PAN_DELTA, 0));
         rightButton.addActionListener(e -> panMap(gp.PAN_DELTA, 0));
-        ricercaButton.addActionListener(e -> {
+        SearchButton.addActionListener(e -> {
             leftPanel.setVisible(!leftPanel.isVisible());
             leftPanel.revalidate();
             leftPanel.repaint();
+            if (leftPanel.isVisible()) {
+                SearchButton.setText("Chiudi ricerca");
+            }
+            else {
+                SearchButton.setText("Ricerca");
+            }
         });
-        panel.add(ricercaButton);
+        panel.add(SearchButton);
         panel.add(upButton);
         panel.add(downButton);
         panel.add(leftButton);
         panel.add(rightButton);
 
         JPanel zoomPanel = createZoomPanel();
+        zoomPanel.setOpaque(false);
         panel.add(zoomPanel);
 
         return panel;
@@ -157,6 +166,7 @@ public class MainPage {
         searchField.setMaximumSize(new Dimension(200, 30));
         searchField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         JButton searchButton = new JButton("Cerca");
+        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         JTextArea resultArea = new JTextArea();
         resultArea.setEditable(false);           // Disattiva modifica
         resultArea.setFocusable(false);          // Niente focus da tastiera
@@ -167,8 +177,12 @@ public class MainPage {
         resultArea.setOpaque(false);             // Sfondo trasparente
         resultArea.setBorder(null);              // Nessun bordo
         panel.setPreferredSize(new Dimension(500, 40));
-
+        JLabel searchLabel = new JLabel("Inserire nome o codice fermata/linea:");
+        searchLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         searchField.setPreferredSize(new Dimension(100, 30));
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(searchLabel);
+        panel.add(Box.createVerticalStrut(10));
         panel.add(searchField);
         panel.add(Box.createVerticalStrut(10));
         panel.add(searchButton);
