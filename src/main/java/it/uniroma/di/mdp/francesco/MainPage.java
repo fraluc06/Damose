@@ -2,10 +2,7 @@ package it.uniroma.di.mdp.francesco;
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
-import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.WaypointPainter;
+import org.jxmapviewer.viewer.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +13,8 @@ import java.util.List;
 import java.util.Timer;
 
 public class MainPage {
-    private static final GlobalParameters gp = new GlobalParameters();
     private static JXMapViewer mapViewer;
+    private static GlobalParameters gp = new GlobalParameters();
     private static JPanel leftPanel;
 
     private static Stops allStops;
@@ -198,7 +195,8 @@ public class MainPage {
             Route foundRoute;
 
             Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop != null) {
+            if (foundStop != null)
+            {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
@@ -213,7 +211,7 @@ public class MainPage {
                 // scansiona la lista degli stoptimes restituiti e li stampa in una tabella
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Linea", "Corsa", "Orario di arrivo", "Attesa (minuti)", "Tipologia"};
+                String[] columns = {"Linea", "Corsa", "Orario di arrivo","Attesa (minuti)","Tipologia"};
                 Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
                 for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
@@ -223,7 +221,7 @@ public class MainPage {
                     Duration differenza = Duration.between(ora, st.getArrivalDateTime());
                     long minuti = differenza.toMinutes();
                     String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
-                    Route curRoute = allRoutes.searchRoute(curRouteId);
+                    Route curRoute =allRoutes.searchRoute(curRouteId);
                     data[i][0] = curRouteId;
                     data[i][1] = st.getTripId();
                     data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
@@ -242,39 +240,43 @@ public class MainPage {
                 tripTable.setRowSelectionAllowed(false);
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
-            } else if ((foundRoute = allRoutes.searchRoute(searchText)) != null) // altrimenti ricerca tra le linee
+            }
+            else if  ((foundRoute = allRoutes.searchRoute(searchText)) != null) // altrimenti ricerca tra le linee
             {
                 resultArea.setText("Linea trovata:\n" + foundRoute.getRouteId() + "\n");
                 // qui trova tutti i trips della linea trovata
                 List<StopTime> stopTimeListOfTripId = new ArrayList<StopTime>();
                 // DA QUI - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
                 List<Trip> tripsOfRoute = allTrips.getTripListFromRouteId(foundRoute.getRouteId());
-                for (Trip elemento : tripsOfRoute) {
+                for (Trip elemento : tripsOfRoute)
+                {
                     //String cur_tripId = "1#952-19"; // scansiona la lista dei trip della linea
 
-                    StopTime appST = allStopTimes.getStoptimesFromTripId(elemento.getTripId(), 1);
+                    StopTime appST = allStopTimes.getStoptimesFromTripId( elemento.getTripId(), 1);
                     if (appST != null)
                         stopTimeListOfTripId.add(appST);
                 }
                 // A QUI  - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
 
-                List<GeoPosition> stopPositions = new ArrayList<>();
+                Set<BusWaypoint> stopWaypoints = new HashSet<>(); // ma direttamente questo
+
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
-                String[] columns = {"Corsa", "Direzione", "Fermata", "Orario previsto", "Tipologia"};
+                String[] columns = {"Corsa", "Direzione","Fermata",  "Orario previsto","Tipologia"};
                 // crea la tabella con i dati
                 Object[][] data = new Object[stopTimeListOfTripId.size()][columns.length];
-                System.out.println("size= " + stopTimeListOfTripId.size());
-                for (int i = 0; i < stopTimeListOfTripId.size(); i++) {
-                    StopTime st = stopTimeListOfTripId.get(i);
+                System.out.println("size= "+stopTimeListOfTripId.size());
+                for (int i = 0; i < stopTimeListOfTripId.size(); i++)
+                {
+                    StopTime st =  stopTimeListOfTripId.get(i);
                     //data[i][0] = foundRoute.getRouteId();
                     String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
                     Route curRoute = allRoutes.searchRoute(curRouteId);
                     Trip curTrip = allTrips.searchTrip(st.getTripId());
                     Stop curStop = allStops.searchStop(st.getStopId()); // lo deve mettere anche nei waypoint
-                    // *********** Crea i waypoint per le fermate
 
-                    stopPositions.add(new GeoPosition(Double.valueOf(curStop.getStopLat()), Double.valueOf(curStop.getStopLon())));
+
+                    stopWaypoints.add(new BusWaypoint(Double.valueOf(curStop.getStopLat()), Double.valueOf(curStop.getStopLon()), curRouteId+" - "+curTrip.getTripHeadSign(),curRoute.getRouteType()));
 
                     // **********
                     data[i][0] = st.getTripId();
@@ -295,9 +297,12 @@ public class MainPage {
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
 
-                displayBusPositions(stopPositions);
+                displayBusWaypoints(stopWaypoints);
 
-            } else {
+            }
+
+
+            else {
                 JOptionPane.showMessageDialog(panel, "Nessuna corrispondenza trovata");
             }
         });
@@ -317,14 +322,32 @@ public class MainPage {
         // displayBusPositions(busPositions);
     }
 
-    // metodo per visualizzare le posizioni dei bus sulla mappa
+    // metodo per visualizzare le posizioni dei bus sulla mappa - SOSTITUITA DALLA displayBusWaypoints
     private static void displayBusPositions(List<GeoPosition> positions) {
         Set<BusWaypoint> waypoints = new HashSet<>();
         for (GeoPosition pos : positions) {
             waypoints.add(new BusWaypoint(pos.getLatitude(), pos.getLongitude()));
         }
+
+
+        // PARTE PRECEDENTE
         WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
         painter.setWaypoints(waypoints);
         mapViewer.setOverlayPainter(painter);
+    }
+
+    // metodo per visualizzare le posizioni dei bus sulla mappa
+    private static void displayBusWaypoints(Set<BusWaypoint> waypoints) {
+
+        // Carica l'icona personalizzata
+        Icon myIcon = new ImageIcon("./icon/iconTRAM.png"); // o usa getResource()
+
+        // Crea e applica il renderer
+        WaypointPainter<Waypoint> painter = new WaypointPainter<>();
+        painter.setWaypoints(waypoints);
+        painter.setRenderer(new CustomWaypointRenderer(myIcon));
+        mapViewer.setOverlayPainter(painter);
+
+
     }
 }
