@@ -15,7 +15,7 @@ public class GlobalParameters {
     public final Color LEFT_PANEL_COLOR = Color.WHITE;
     public final double ROME_CENTER_LAT = 41.8868;
     public final double ROME_CENTER_LON = 12.5043;
-    public final int TIMER_DELAY_MS = 30000;
+    public final int TIMER_DELAY_MS = 15000;
 
     // Nuovi parametri aggiunti
     public final double PAN_DELTA = 0.01;

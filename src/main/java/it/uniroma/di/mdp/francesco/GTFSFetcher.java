@@ -9,11 +9,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static it.uniroma.di.mdp.francesco.MainPage.allRoutes;
+import static it.uniroma.di.mdp.francesco.MainPage.allTrips;
 
 public class GTFSFetcher {
     private static final String GTFS_RT_URL = "https://romamobilita.it/sites/default/files/rome_rtgtfs_vehicle_positions_feed.pb";
 
-    public static Set<BusWaypoint> fetchBusPositions() {
+    public static Set<BusWaypoint> fetchBusPositions(String filterRouteId) {
         Set<BusWaypoint> busWaypoints = new HashSet<>();
 
         try {
@@ -31,11 +32,17 @@ public class GTFSFetcher {
                 if (entity.hasVehicle()) {
                     GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
                     GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
-
-                    Route route = allRoutes.searchRoute(tripDescriptor.getRouteId());
-                    double lat = vehicle.getPosition().getLatitude();
-                    double lon = vehicle.getPosition().getLongitude();
-                    busWaypoints.add(new BusWaypoint(lat, lon, route.getRouteId(), route.getRouteType()));
+                    String curRouteId = tripDescriptor.getRouteId();
+                    String curTripId = tripDescriptor.getTripId();
+                    System.out.println("entity online "+entity);
+                    if (curRouteId.equals(filterRouteId)) // se è una informazione sulla linea richiesta dal filtro
+                    {
+                        //Route route = allRoutes.searchRoute(curRouteId);
+                        Trip trip = allTrips.searchTrip(curTripId);
+                        double lat = vehicle.getPosition().getLatitude();
+                        double lon = vehicle.getPosition().getLongitude();
+                        busWaypoints.add(new BusWaypoint(lat, lon, trip));//route.getRouteId(), route.getRouteType()+" / "+trip.getTripHeadSign()));
+                    }
                 }
             }
         } catch (Exception e) {

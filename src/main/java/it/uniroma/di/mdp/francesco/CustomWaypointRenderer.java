@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
     //private final Icon icon;
-    private final Map<String, Icon > mappaIcon;
-    public CustomWaypointRenderer(Icon icon) {
+    private  Map<String, Icon > mappaIcon;
+    public CustomWaypointRenderer() {
         //this.icon = icon;
-        // crea una mappa per le differenti icone
+         // crea una mappa per le differenti icone
         mappaIcon = new HashMap<>();
         Icon iconBUS = new ImageIcon("./icon/iconBUS.png");
         Icon iconMETRO = new ImageIcon("./icon/iconMETRO.png");
@@ -36,7 +36,7 @@ public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
         if (waypoint instanceof BusWaypoint cw) {
 
             Icon icon = mappaIcon.get(cw.getRouteType());
-            //get( (cw.getRouteType() ); // prende l'icona in base al route type
+                    //get( (cw.getRouteType() ); // prende l'icona in base al route type
             int x = (int) point.getX() - icon.getIconWidth() / 2;
             int y = (int) point.getY() - icon.getIconHeight() / 2;
             icon.paintIcon(map, g, x, y);
@@ -51,6 +51,9 @@ public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
             g.setFont(new Font("SansSerif", Font.BOLD, 12));
             g.drawString(label, x - textWidth / 2 + icon.getIconWidth() / 2, y - 5); // sopra l'icona
         }
+
+
+
     }
 }
 

@@ -1,11 +1,16 @@
 package it.uniroma.di.mdp.francesco;
+
 import java.util.HashMap;
 import java.util.Map;
+
 // classe per la rappresentazione dei dati GTFS statici di una linea (route)
 public class Route {
-    private final String routeId;
-    private final String routeType;
-    private final Map<String, String> mappaTypeDesc;
+    private String routeId;
+
+
+
+    private String routeType;
+    private Map<String, String> mappaTypeDesc;
     //costruttore
     public Route(String routeId,String routeType) {
         this.routeId = routeId;
@@ -29,3 +34,5 @@ public class Route {
         return mappaTypeDesc.get(routeType);
     }
 }
+
+

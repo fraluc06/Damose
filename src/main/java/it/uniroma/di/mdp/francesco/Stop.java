@@ -2,10 +2,12 @@ package it.uniroma.di.mdp.francesco;
 
 public class Stop {
 
-    private final String stopId; // id identificativo dello stop (fermata)
-    private final String stopName;  // nome fermata
-    private final String stopLat; // latitudine fermata
-    private final String stopLon;  // longitudine fermata
+    private String stopId; // id identificativo dello stop (fermata)
+    private String stopName;  // nome fermata
+    private String stopLat; // latitudine fermata
+    private String stopLon;  // longitudine fermata
+
+
 
     // getter delle variabili
     public String getStopId() {
@@ -22,6 +24,14 @@ public class Stop {
 
     public String getStopLon() {
         return stopLon;
+    }
+
+    public double getDoubleStopLat() {
+        return  Double.valueOf(stopLat);
+    }
+
+    public double getDoubleStopLon() {
+        return Double.valueOf(stopLon);
     }
 
     public void print() {

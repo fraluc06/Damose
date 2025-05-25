@@ -60,10 +60,10 @@ public class StopTime {
             LocalDateTime adesso = LocalDateTime.now();
 
             if (h_i>23) // se notazione ora >23 è un ora del giorno dopo
-            // va rinormalizzata l'ora e incrementato di 1 il giorno
-            {
+                // va rinormalizzata l'ora e incrementato di 1 il giorno
+                {
                 int delta_h = h_i-23; // delta_h = 1-> 24 -> 00 del giorno dopo , delta_h = 2 -> 01 del giorno dopo , etc.
-                arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), delta_h, m_i, s_i).plusDays(1);
+                     arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), delta_h, m_i, s_i).plusDays(1);
             }
             else  arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
 

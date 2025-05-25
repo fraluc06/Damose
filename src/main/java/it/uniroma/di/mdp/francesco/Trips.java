@@ -10,7 +10,7 @@ import java.util.List;
 public class Trips
 {
 
-    private final List<Trip> listOfTrips; //
+    private List<Trip> listOfTrips; //
 
     // costruttore
     public Trips() {

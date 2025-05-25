@@ -19,8 +19,10 @@ public class MainPage {
 
     private static Stops allStops;
     public static Routes allRoutes; // pubblica per uso nel fetcher
-    private static Trips allTrips;
+    public static Trips allTrips;
     private static StopTimes allStopTimes;
+    private static String currentRouteId; // RouteId corrente, risultato del filtro
+    private static boolean isOnline; // flag che indica se online o offline
 
     public static void main(String[] args) {
         StaticGTFSDownloader downloader = new StaticGTFSDownloader(gp.getFileURL(), gp.getMd5URL(), gp.getFolderPath());
@@ -44,7 +46,8 @@ public class MainPage {
         allTrips.loadFromFile(gp.getFolderPath() + "/trips.txt");
         allStopTimes = new StopTimes();
         allStopTimes.loadFromFile(gp.getFolderPath() + "/stop_times.txt");
-
+        currentRouteId = ""; // nessun route selezionato
+        isOnline = true; // parte con true e poi  mette a false se non riesce a connettersi
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame(gp.FRAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -209,6 +212,7 @@ public class MainPage {
             if (foundStop != null)
             {
                 resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
+                currentRouteId = ""; // resetta il filtro per routeId
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
                 waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
@@ -255,6 +259,7 @@ public class MainPage {
             else if  ((foundRoute = allRoutes.searchRoute(searchText)) != null) // altrimenti ricerca tra le linee
             {
                 resultArea.setText("Linea trovata:\n" + foundRoute.getRouteId() + "\n");
+                currentRouteId = foundRoute.getRouteId(); // imposta il filtro alla routeid corrente
                 // qui trova tutti i trips della linea trovata
                 List<StopTime> stopTimeListOfTripId = new ArrayList<StopTime>();
                 // DA QUI - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
@@ -269,7 +274,7 @@ public class MainPage {
                 }
                 // A QUI  - - - - CICLA SU TUTTI I TRIP ID DELLA ROUTE
 
-                Set<BusWaypoint> stopWaypoints = new HashSet<>(); // ma direttamente questo
+                Set<BusWaypoint> stopWaypoints = new HashSet<>(); // uso direttamente questo
 
                 tripTable.setVisible(true);
                 tableScroll.setVisible(true);
@@ -308,7 +313,8 @@ public class MainPage {
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
 
-                displayBusWaypoints(stopWaypoints);
+                if (!isOnline) // visualizza i waypoint creati dai dati offline nella mappa SOLO SE è offline
+                  displayBusWaypoints(stopWaypoints);
 
             }
 
@@ -329,34 +335,19 @@ public class MainPage {
 
     // metodo per aggiornare le posizioni dei bus
     private static void updateBusPositions() {
-        Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions();
+        Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions(currentRouteId);
         displayBusWaypoints(busWaypoints);
     }
 
-    // metodo per visualizzare le posizioni dei bus sulla mappa - SOSTITUITA DALLA displayBusWaypoints
-    private static void displayBusPositions(List<GeoPosition> positions) {
-        Set<BusWaypoint> waypoints = new HashSet<>();
-        for (GeoPosition pos : positions) {
-            waypoints.add(new BusWaypoint(pos.getLatitude(), pos.getLongitude()));
-        }
 
-
-        // PARTE PRECEDENTE
-        WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
-        painter.setWaypoints(waypoints);
-        mapViewer.setOverlayPainter(painter);
-    }
 
     // metodo per visualizzare le posizioni dei bus sulla mappa
     private static void displayBusWaypoints(Set<BusWaypoint> waypoints) {
 
-        // Carica l'icona personalizzata
-        Icon myIcon = new ImageIcon("./icon/iconTRAM.png"); // o usa getResource()
-
         // Crea e applica il renderer
         WaypointPainter<Waypoint> painter = new WaypointPainter<>();
         painter.setWaypoints(waypoints);
-        painter.setRenderer(new CustomWaypointRenderer(myIcon));
+        painter.setRenderer(new CustomWaypointRenderer());
         mapViewer.setOverlayPainter(painter);
 
 

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Routes {
-    private final Map<String, Route> routeMap;
+    private Map<String, Route> routeMap;
 
     public Routes() {
         routeMap = new HashMap<>();

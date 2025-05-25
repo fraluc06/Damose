@@ -3,9 +3,9 @@ package it.uniroma.di.mdp.francesco;
 // classe rappresentante un trip
 public class Trip {
 
-    private final String tripId; // id della corsa
-    private final String tripHeadSign; // insegna della corsa es. "VALLE GIULIA"
-    private final String routeId; // route_id del trip_id ovvero linea servita dalla corsa es. linea tram 3
+    private String tripId; // id della corsa
+    private String tripHeadSign; // insegna della corsa es. "VALLE GIULIA"
+    private String routeId; // route_id del trip_id ovvero linea servita dalla corsa es. linea tram 3
 
     public String getTripId() {
         return tripId;
