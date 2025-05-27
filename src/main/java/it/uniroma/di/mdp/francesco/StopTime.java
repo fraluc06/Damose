@@ -8,26 +8,39 @@ import java.time.LocalDateTime;
  */
 public class StopTime {
 
-    /** ID della corsa (trip). */
-    private String tripId;
-    /** ID della fermata (stop). */
-    private String stopId;
-    /** Numero progressivo della fermata nel trip. */
-    private String stopSequence;
-    /** Orario di arrivo alla fermata (formato stringa originale). */
-    private String arrivalTime;
-    /** Orario di arrivo alla fermata in formato LocalDateTime. */
+    /**
+     * ID della corsa (trip).
+     */
+    private final String tripId;
+    /**
+     * ID della fermata (stop).
+     */
+    private final String stopId;
+    /**
+     * Numero progressivo della fermata nel trip.
+     */
+    private final String stopSequence;
+    /**
+     * Orario di arrivo alla fermata (formato stringa originale).
+     */
+    private final String arrivalTime;
+    /**
+     * Orario di arrivo alla fermata in formato LocalDateTime.
+     */
     private LocalDateTime arrivalDateTime;
-    /** Distanza percorsa dal capolinea. */
-    private String shapeDistTraveled;
+    /**
+     * Distanza percorsa dal capolinea.
+     */
+    private final String shapeDistTraveled;
 
     /**
      * Costruttore della classe StopTime.
      * Converte l'orario di arrivo in formato LocalDateTime, gestendo anche orari oltre le 23.
-     * @param tripId ID della corsa
-     * @param stopId ID della fermata
-     * @param stopSequence numero progressivo della fermata nel trip
-     * @param arrivalTime orario di arrivo alla fermata (formato stringa)
+     *
+     * @param tripId            ID della corsa
+     * @param stopId            ID della fermata
+     * @param stopSequence      numero progressivo della fermata nel trip
+     * @param arrivalTime       orario di arrivo alla fermata (formato stringa)
      * @param shapeDistTraveled distanza percorsa dal capolinea
      */
     public StopTime(String tripId, String stopId, String stopSequence, String arrivalTime, String shapeDistTraveled) {
@@ -40,11 +53,11 @@ public class StopTime {
         try {
             // Converte l'arrivalTime nel tipo LocalDateTime
             String appArrivalTime = this.arrivalTime;
-            String h = appArrivalTime.substring(0,2);
+            String h = appArrivalTime.substring(0, 2);
             int h_i = Integer.parseInt(h);
-            String m = appArrivalTime.substring(3,5);
+            String m = appArrivalTime.substring(3, 5);
             int m_i = Integer.parseInt(m);
-            String s = appArrivalTime.substring(6,8);
+            String s = appArrivalTime.substring(6, 8);
             int s_i = Integer.parseInt(s);
             LocalDateTime adesso = LocalDateTime.now();
 
@@ -62,6 +75,7 @@ public class StopTime {
 
     /**
      * Restituisce l'ID della corsa.
+     *
      * @return ID della corsa
      */
     public String getTripId() {
@@ -70,6 +84,7 @@ public class StopTime {
 
     /**
      * Restituisce l'ID della fermata.
+     *
      * @return ID della fermata
      */
     public String getStopId() {
@@ -78,6 +93,7 @@ public class StopTime {
 
     /**
      * Restituisce il numero progressivo della fermata nel trip.
+     *
      * @return sequenza della fermata
      */
     public String getStopSequence() {
@@ -86,6 +102,7 @@ public class StopTime {
 
     /**
      * Restituisce l'orario di arrivo alla fermata (formato stringa).
+     *
      * @return orario di arrivo
      */
     public String getArrivalTime() {
@@ -94,6 +111,7 @@ public class StopTime {
 
     /**
      * Restituisce la distanza percorsa dal capolinea.
+     *
      * @return distanza percorsa
      */
     public String getShapeDistTraveled() {
@@ -102,6 +120,7 @@ public class StopTime {
 
     /**
      * Restituisce l'orario di arrivo alla fermata in formato LocalDateTime.
+     *
      * @return orario di arrivo come LocalDateTime
      */
     public LocalDateTime getArrivalDateTime() {

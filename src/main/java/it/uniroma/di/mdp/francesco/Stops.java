@@ -12,8 +12,10 @@ import java.util.List;
  */
 public class Stops {
 
-    /** Lista di tutte le fermate caricate. */
-    private List<Stop> listOfStops;
+    /**
+     * Lista di tutte le fermate caricate.
+     */
+    private final List<Stop> listOfStops;
 
     /**
      * Costruttore della classe Stops.
@@ -25,6 +27,7 @@ public class Stops {
 
     /**
      * Aggiunge una fermata alla lista delle fermate.
+     *
      * @param stop oggetto Stop da aggiungere
      */
     public void AddStop(Stop stop) {
@@ -33,6 +36,7 @@ public class Stops {
 
     /**
      * Carica le fermate da un file CSV GTFS (stops.txt).
+     *
      * @param filePath percorso del file da cui caricare le fermate
      */
     public void loadFromFile(String filePath) {
@@ -67,6 +71,7 @@ public class Stops {
 
     /**
      * Cerca una fermata tramite il suo ID o nome.
+     *
      * @param searchString ID o nome della fermata da cercare
      * @return oggetto Stop corrispondente, oppure null se non trovato
      */

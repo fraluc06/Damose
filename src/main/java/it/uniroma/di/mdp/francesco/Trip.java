@@ -6,18 +6,25 @@ package it.uniroma.di.mdp.francesco;
  */
 public class Trip {
 
-    /** ID della corsa. */
-    private String tripId;
-    /** Insegna della corsa (es. "VALLE GIULIA"). */
-    private String tripHeadSign;
-    /** ID della linea servita dalla corsa (route_id). */
-    private String routeId;
+    /**
+     * ID della corsa.
+     */
+    private final String tripId;
+    /**
+     * Insegna della corsa (es. "VALLE GIULIA").
+     */
+    private final String tripHeadSign;
+    /**
+     * ID della linea servita dalla corsa (route_id).
+     */
+    private final String routeId;
 
     /**
      * Costruttore della classe Trip.
-     * @param tripId ID della corsa
+     *
+     * @param tripId       ID della corsa
      * @param tripHeadSign insegna della corsa
-     * @param routeId ID della linea servita dalla corsa
+     * @param routeId      ID della linea servita dalla corsa
      */
     public Trip(String tripId, String tripHeadSign, String routeId) {
         this.tripId = tripId;
@@ -27,6 +34,7 @@ public class Trip {
 
     /**
      * Restituisce l'ID della corsa.
+     *
      * @return ID della corsa
      */
     public String getTripId() {
@@ -35,6 +43,7 @@ public class Trip {
 
     /**
      * Restituisce l'insegna della corsa.
+     *
      * @return insegna della corsa
      */
     public String getTripHeadSign() {
@@ -43,6 +52,7 @@ public class Trip {
 
     /**
      * Restituisce l'ID della linea servita dalla corsa.
+     *
      * @return ID della linea
      */
     public String getRouteId() {

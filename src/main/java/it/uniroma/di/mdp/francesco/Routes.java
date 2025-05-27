@@ -3,15 +3,18 @@ package it.uniroma.di.mdp.francesco;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Classe che gestisce la collezione delle linee (route) GTFS.
  * Permette di aggiungere, cercare, stampare e caricare le linee da file.
  */
 public class Routes {
-    /** Mappa che associa l'ID della linea all'oggetto Route corrispondente. */
-    private Map<String, Route> routeMap;
+    /**
+     * Mappa che associa l'ID della linea all'oggetto Route corrispondente.
+     */
+    private final Map<String, Route> routeMap;
 
     /**
      * Costruttore della classe Routes.
@@ -23,6 +26,7 @@ public class Routes {
 
     /**
      * Aggiunge una linea (Route) alla collezione.
+     *
      * @param route oggetto Route da aggiungere
      */
     public void addRoute(Route route) {
@@ -40,6 +44,7 @@ public class Routes {
 
     /**
      * Carica le linee da un file CSV GTFS (routes.txt).
+     *
      * @param filePath percorso del file da cui caricare le linee
      */
     public void loadFromFile(String filePath) {
@@ -65,6 +70,7 @@ public class Routes {
 
     /**
      * Cerca una linea tramite il suo identificativo.
+     *
      * @param searchString identificativo della linea da cercare
      * @return oggetto Route corrispondente, oppure null se non trovato
      */

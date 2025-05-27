@@ -1,7 +1,6 @@
 package it.uniroma.di.mdp.francesco;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.nio.file.Path;
 
 /**
@@ -9,40 +8,69 @@ import java.nio.file.Path;
  * per l'applicazione Rome Bus Tracker.
  */
 public class GlobalParameters {
-    /** Livello di zoom della mappa. */
+    /**
+     * Livello di zoom della mappa.
+     */
     private int mapZoom;
 
-    /** Titolo della finestra principale. */
+    /**
+     * Titolo della finestra principale.
+     */
     public final String FRAME_TITLE = "Rome Bus Tracker";
-    /** Larghezza della finestra principale. */
+    /**
+     * Larghezza della finestra principale.
+     */
     public final int FRAME_WIDTH = 1300;
-    /** Altezza della finestra principale. */
+    /**
+     * Altezza della finestra principale.
+     */
     public final int FRAME_HEIGHT = 800;
-    /** Colore del pannello di navigazione. */
+    /**
+     * Colore del pannello di navigazione.
+     */
     public final Color NAVIGATION_PANEL_COLOR = new Color(200, 200, 200);
-    /** Colore del pannello sinistro. */
+    /**
+     * Colore del pannello sinistro.
+     */
     public final Color LEFT_PANEL_COLOR = Color.WHITE;
-    /** Latitudine del centro di Roma. */
+    /**
+     * Latitudine del centro di Roma.
+     */
     public final double ROME_CENTER_LAT = 41.8868;
-    /** Longitudine del centro di Roma. */
+    /**
+     * Longitudine del centro di Roma.
+     */
     public final double ROME_CENTER_LON = 12.5043;
-    /** Delay del timer in millisecondi per l'aggiornamento. */
+    /**
+     * Delay del timer in millisecondi per l'aggiornamento.
+     */
     public final int TIMER_DELAY_MS = 15000;
 
-    /** Delta di spostamento per il pan della mappa. */
+    /**
+     * Delta di spostamento per il pan della mappa.
+     */
     public final double PAN_DELTA = 0.01;
-    /** Dimensione standard dei bottoni. */
+    /**
+     * Dimensione standard dei bottoni.
+     */
     public final Dimension BUTTON_SIZE = new Dimension(60, 30);
 
-    /** URL del file GTFS. */
+    /**
+     * URL del file GTFS.
+     */
     private final String FILE_URL = "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip";
-    /** URL del file MD5 per il GTFS. */
+    /**
+     * URL del file MD5 per il GTFS.
+     */
     private final String MD5_URL = "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip.md5";
-    /** Percorso della cartella dove vengono estratti i dati GTFS. */
+    /**
+     * Percorso della cartella dove vengono estratti i dati GTFS.
+     */
     private final Path FOLDER_PATH = java.nio.file.Paths.get("rome_static_gtfs");
 
     /**
      * Restituisce l'URL del file GTFS.
+     *
      * @return URL del file GTFS
      */
     public String getFileURL() {
@@ -51,6 +79,7 @@ public class GlobalParameters {
 
     /**
      * Restituisce l'URL del file MD5 per il GTFS.
+     *
      * @return URL del file MD5
      */
     public String getMd5URL() {
@@ -59,6 +88,7 @@ public class GlobalParameters {
 
     /**
      * Restituisce il percorso della cartella dei dati GTFS.
+     *
      * @return percorso della cartella
      */
     public Path getFolderPath() {
@@ -67,6 +97,7 @@ public class GlobalParameters {
 
     /**
      * Restituisce il livello di zoom della mappa.
+     *
      * @return livello di zoom
      */
     public int getMapZoom() {
@@ -75,6 +106,7 @@ public class GlobalParameters {
 
     /**
      * Imposta il livello di zoom della mappa.
+     *
      * @param mapZoom livello di zoom da impostare
      */
     public void setMapZoom(int mapZoom) {
