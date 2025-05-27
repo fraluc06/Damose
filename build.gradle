@@ -18,7 +18,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'it.uniroma.di.mdp.francesco.MainPage'
+    mainClass = 'it.uniroma.di.mdp.francesco.Main'
 }
 
 test {

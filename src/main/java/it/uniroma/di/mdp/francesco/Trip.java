@@ -1,30 +1,51 @@
 package it.uniroma.di.mdp.francesco;
 
-// classe rappresentante un trip
+/**
+ * Classe che rappresenta una corsa (trip) nel sistema GTFS.
+ * Contiene informazioni sull'ID della corsa, l'insegna e la linea servita.
+ */
 public class Trip {
 
-    private String tripId; // id della corsa
-    private String tripHeadSign; // insegna della corsa es. "VALLE GIULIA"
-    private String routeId; // route_id del trip_id ovvero linea servita dalla corsa es. linea tram 3
+    /** ID della corsa. */
+    private String tripId;
+    /** Insegna della corsa (es. "VALLE GIULIA"). */
+    private String tripHeadSign;
+    /** ID della linea servita dalla corsa (route_id). */
+    private String routeId;
 
-    public String getTripId() {
-        return tripId;
-    }
-
-    public String getTripHeadSign() {
-        return tripHeadSign;
-    }
-
-    public String getRouteId() {
-        return routeId;
-    }
-
-
-    public Trip(String tripId,String tripHeadSign,String routeId) {
+    /**
+     * Costruttore della classe Trip.
+     * @param tripId ID della corsa
+     * @param tripHeadSign insegna della corsa
+     * @param routeId ID della linea servita dalla corsa
+     */
+    public Trip(String tripId, String tripHeadSign, String routeId) {
         this.tripId = tripId;
         this.tripHeadSign = tripHeadSign;
         this.routeId = routeId;
     }
+
+    /**
+     * Restituisce l'ID della corsa.
+     * @return ID della corsa
+     */
+    public String getTripId() {
+        return tripId;
+    }
+
+    /**
+     * Restituisce l'insegna della corsa.
+     * @return insegna della corsa
+     */
+    public String getTripHeadSign() {
+        return tripHeadSign;
+    }
+
+    /**
+     * Restituisce l'ID della linea servita dalla corsa.
+     * @return ID della linea
+     */
+    public String getRouteId() {
+        return routeId;
+    }
 }
-
-

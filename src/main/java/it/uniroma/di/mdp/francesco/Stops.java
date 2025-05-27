@@ -6,28 +6,36 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe che gestisce la collezione delle fermate (stop) GTFS.
+ * Permette di aggiungere, cercare, stampare e caricare le fermate da file.
+ */
 public class Stops {
 
-    private List<Stop> listOfStops; //
+    /** Lista di tutte le fermate caricate. */
+    private List<Stop> listOfStops;
 
-    // costruttore
+    /**
+     * Costruttore della classe Stops.
+     * Inizializza la lista delle fermate.
+     */
     public Stops() {
-
         listOfStops = new ArrayList<Stop>();
-
     }
 
-    // metodo che aggiunge uno stop alla list_of_stops
-    public void AddStop(Stop stop)
-    {
+    /**
+     * Aggiunge una fermata alla lista delle fermate.
+     * @param stop oggetto Stop da aggiungere
+     */
+    public void AddStop(Stop stop) {
         listOfStops.add(stop);
-
     }
 
-
-    public void loadFromFile(String filePath)
-    {
-
+    /**
+     * Carica le fermate da un file CSV GTFS (stops.txt).
+     * @param filePath percorso del file da cui caricare le fermate
+     */
+    public void loadFromFile(String filePath) {
         String delimiter = ","; // carattere separatore campi
 
         try {
@@ -35,51 +43,49 @@ public class Stops {
             String line;
             boolean primaRiga = true; // la prima riga la scarto perchè contiene intestazione dei campi
 
-            while ((line = reader.readLine()) != null) // legge le linee dei file
-            {
-                String[] fields = line.split(delimiter); // Split della linea in base al delimitatore
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(delimiter);
 
                 if (primaRiga) {
                     primaRiga = false;
-                }
-                else {       // dalla seconda riga in poi
-                    String currentStopId = fields[0]; // stop_id dello stop
-                    String current_stop_name = fields[2]; // nome dello stop (fermata)
-                    // Rimuove eventuali caratteri di nuova linea dal nome dello stop
+                } else {
+                    String currentStopId = fields[0];
+                    String current_stop_name = fields[2];
                     current_stop_name = current_stop_name.replace("\"", "");
-                    String currentStopLat = fields[4]; // latitudine dello stop
-                    String currentStopLon = fields[5]; // longitudine dello stop
-                    Stop current_stop = new Stop(currentStopId, current_stop_name, currentStopLat, currentStopLon); // creo uno oggetto stop (fermata)
-                    this.AddStop(current_stop); // inserisco lo stop (fermata) nella lista di tutti gli stop (fermate)
-
+                    String currentStopLat = fields[4];
+                    String currentStopLon = fields[5];
+                    Stop current_stop = new Stop(currentStopId, current_stop_name, currentStopLat, currentStopLon);
+                    this.AddStop(current_stop);
                 }
-            } // fine while
+            }
             reader.close();
 
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-    } // fine metodo LoadFromFile
-    public Stop searchStop(String searchString)
-    {
+    /**
+     * Cerca una fermata tramite il suo ID o nome.
+     * @param searchString ID o nome della fermata da cercare
+     * @return oggetto Stop corrispondente, oppure null se non trovato
+     */
+    public Stop searchStop(String searchString) {
         for (Stop stop : listOfStops) {
             if (stop.getStopId().equals(searchString) || stop.getStopName().equals(searchString)) {
-                return stop; // restituisce lo stop (fermata) se trovato
+                return stop;
             }
         }
-        return null; // restituisce null se non trovato
+        return null;
     }
 
-    // stampa tutti gli stop (tutte le fermate)
-    public void Print()
-    {
-        //System.out.println("entrato Stops.Print()"); // debug
+    /**
+     * Stampa su console tutte le fermate presenti nella lista.
+     */
+    public void Print() {
         for (Stop elemento : listOfStops) {
-            System.out.println("Stop: "+elemento.getStopId()+" Name: "+elemento.getStopName()+" LAT: "+elemento.getStopLat()+" LON: "+elemento.getStopLon());
+            System.out.println("Stop: " + elemento.getStopId() + " Name: " + elemento.getStopName() +
+                    " LAT: " + elemento.getStopLat() + " LON: " + elemento.getStopLon());
         }
     }
-
-
-} // fine della classe
+}

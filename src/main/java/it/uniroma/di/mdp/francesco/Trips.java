@@ -1,137 +1,138 @@
 package it.uniroma.di.mdp.francesco;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+    import java.io.BufferedReader;
+    import java.io.FileReader;
+    import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.List;
 
-// classe per la rappresentazione di tutti i trip
-public class Trips
-{
+    /**
+     * Classe che rappresenta la collezione di tutte le corse (trip) del sistema GTFS.
+     * Permette di aggiungere, cercare, stampare e caricare i trip da file.
+     */
+    public class Trips {
 
-    private List<Trip> listOfTrips; //
+        /** Lista di tutte le corse caricate. */
+        private List<Trip> listOfTrips;
 
-    // costruttore
-    public Trips() {
+        /**
+         * Costruttore della classe Trips.
+         * Inizializza la lista delle corse.
+         */
+        public Trips() {
+            listOfTrips = new ArrayList<Trip>();
+        }
 
-        listOfTrips = new ArrayList<Trip>();
+        /**
+         * Aggiunge una corsa (trip) alla lista.
+         * @param trip oggetto Trip da aggiungere
+         */
+        public void AddTrip(Trip trip) {
+            listOfTrips.add(trip);
+        }
 
-    }
+        /**
+         * Restituisce il numero totale di trip caricati.
+         * @return numero di trip
+         */
+        public int getSize() {
+            return listOfTrips.size();
+        }
 
-    // metodo che aggiunge un trip alla list_of_trips
-    public void AddTrip(Trip trip)
-    {
-        listOfTrips.add(trip);
+        /**
+         * Carica i trip da un file CSV GTFS (trips.txt).
+         * @param filePath percorso del file da cui caricare i trip
+         */
+        public void loadFromFile(String filePath) {
+            String delimiter = ","; // carattere separatore campi
 
-    }
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(filePath));
+                String line;
+                boolean prima_riga = true; // la prima riga la scarto perchè contiene intestazione dei campi
 
-    // ritorna il numero di trips
-    public int getSize()
-    {
-        return  listOfTrips.size();
-    }
+                while ((line = reader.readLine()) != null) {
+                    String[] fields = line.split(delimiter);
 
-    public void loadFromFile(String filePath)
-    {
-
-        String delimiter = ","; // carattere separatore campi
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line;
-            boolean prima_riga = true; // la prima riga la scarto perchè contiene intestazione dei campi
-
-            while ((line = reader.readLine()) != null) // legge le linee dei file
-            {
-                String[] fields = line.split(delimiter); // Split della linea in base al delimitatore
-
-                if (prima_riga) {
-                    prima_riga = false;
+                    if (prima_riga) {
+                        prima_riga = false;
+                    } else {
+                        String currentRouteId = fields[0];
+                        String currentServiceId = fields[1];
+                        String currentTripId = fields[2];
+                        String currentTripHeadsign = fields[3];
+                        Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId);
+                        this.AddTrip(currentTrip);
+                    }
                 }
-                else { // dalla seconda riga in poi
+                reader.close();
 
-                    // nel primo campo della riga fields[0] c'è il nome della linea
-                    String currentRouteId = fields[0]; // routeId del trip
-                    String currentServiceId = fields[1]; // serviceId del trip
-                    String currentTripId = fields[2]; // serviceId del trip
-                    String currentTripHeadsign = fields[3]; // trip headsign
-                    Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId); // creo una corsa Trip
-                    this.AddTrip(currentTrip); // inserisco ìl trip nella lista di tutti i trips
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+        /**
+         * Stampa su console tutti i trip di tutte le route.
+         */
+        public void Print() {
+            for (Trip elemento : listOfTrips) {
+                System.out.println("Trip: " + elemento.getTripId() + " Route: " + elemento.getRouteId() + " Headsign: " + elemento.getTripHeadSign());
+            }
+        }
+
+        /**
+         * Stampa su console tutti i trip relativi a una specifica route.
+         * @param routeId identificativo della route
+         */
+        public void Print(String routeId) {
+            for (Trip elemento : listOfTrips) {
+                if (elemento.getRouteId().equals(routeId))
+                    System.out.println("Trip: " + elemento.getTripId() + " Route: " + elemento.getRouteId() + " Headsign: " + elemento.getTripHeadSign());
+            }
+        }
+
+        /**
+         * Restituisce la routeId corrispondente a un dato tripId.
+         * @param tripId identificativo della corsa
+         * @return routeId corrispondente, oppure null se non trovato
+         */
+        public String getRouteIdFromTripId(String tripId) {
+            for (Trip elemento : listOfTrips) {
+                if (elemento.getTripId().equals(tripId)) {
+                    return elemento.getRouteId();
                 }
-            } // fine while
-            reader.close();
-
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    } // fine metodo LoadFromFile
-
-    // stampa tutti i trip di tutti le routes
-    public void Print()
-    {
-        for (Trip elemento : listOfTrips) {
-            System.out.println("Trip: "+elemento.getTripId()+" Route: "+elemento.getRouteId()+" Headsign: "+elemento.getTripHeadSign());
-        }
-    }
-
-    // stampa tutti i trip del singolo routeId
-    public void Print(String routeId)
-    {
-        for (Trip elemento : listOfTrips) {
-            if (elemento.getRouteId().equals(routeId))
-                System.out.println("Trip: "+elemento.getTripId()+" Route: "+elemento.getRouteId()+" Headsign: "+elemento.getTripHeadSign());
-
-        }
-    }
-
-    // restituisce la routeId corrispondente al tripId
-    public String getRouteIdFromTripId (String tripId)
-    {
-
-        for (Trip elemento : listOfTrips)
-        {
-            if (elemento.getTripId().equals(tripId))
-            {
-                return elemento.getRouteId();
-
             }
+            return null;
         }
-        return null;
-    }
 
-    // restituisce la trip corrispondente al tripId
-    public Trip searchTrip(String tripId)
-    {
-
-        for (Trip elemento : listOfTrips)
-        {
-            if (elemento.getTripId().equals(tripId))
-            {
-                return elemento;
-
+        /**
+         * Restituisce il trip corrispondente a un dato tripId.
+         * @param tripId identificativo della corsa
+         * @return oggetto Trip corrispondente, oppure null se non trovato
+         */
+        public Trip searchTrip(String tripId) {
+            for (Trip elemento : listOfTrips) {
+                if (elemento.getTripId().equals(tripId)) {
+                    return elemento;
+                }
             }
+            return null;
         }
-        return null;
-    }
 
-    // restituisce la lista dei trip id della route specificata
-    public List<Trip> getTripListFromRouteId(String routeId)
-    {
-
-        List<Trip> appTripList = new ArrayList<Trip>();
-        for (Trip elemento : listOfTrips)
-        {
-            if (elemento.getRouteId().equals(routeId)) // se è un tripid del route che cerco
-            {  appTripList.add(elemento);
-
+        /**
+         * Restituisce la lista dei trip associati a una specifica route.
+         * @param routeId identificativo della route
+         * @return lista di Trip per la route specificata
+         */
+        public List<Trip> getTripListFromRouteId(String routeId) {
+            List<Trip> appTripList = new ArrayList<Trip>();
+            for (Trip elemento : listOfTrips) {
+                if (elemento.getRouteId().equals(routeId)) {
+                    appTripList.add(elemento);
+                }
             }
+            return appTripList;
         }
 
-        return appTripList;
-    }
-
-} // fine class Trips
+    } // fine class Trips

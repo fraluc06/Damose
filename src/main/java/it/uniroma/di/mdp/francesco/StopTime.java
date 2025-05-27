@@ -2,44 +2,34 @@ package it.uniroma.di.mdp.francesco;
 
 import java.time.LocalDateTime;
 
+/**
+ * Classe che rappresenta un orario di fermata (stop_time) nel sistema GTFS.
+ * Contiene informazioni sulla corsa, la fermata, la sequenza, l'orario di arrivo e la distanza percorsa.
+ */
 public class StopTime {
 
-    private String tripId;  // id corsa
-    private String stopId;  // id fermata
-    private String stopSequence;  // numero progressivo della fermata nel trip
-    private String arrivalTime;  // orario di arrivo alla fermata (formato stringa originale)
+    /** ID della corsa (trip). */
+    private String tripId;
+    /** ID della fermata (stop). */
+    private String stopId;
+    /** Numero progressivo della fermata nel trip. */
+    private String stopSequence;
+    /** Orario di arrivo alla fermata (formato stringa originale). */
+    private String arrivalTime;
+    /** Orario di arrivo alla fermata in formato LocalDateTime. */
+    private LocalDateTime arrivalDateTime;
+    /** Distanza percorsa dal capolinea. */
+    private String shapeDistTraveled;
 
-
-
-    private LocalDateTime  arrivalDateTime; // orario di arrivo alla fermata in formato localDateTime
-    private String shapeDistTraveled;  // distanza percorsa dal capolinea (ok ?)
-
-    // getter delle variabili
-    public String getTripId() {
-        return tripId;
-    }
-
-    public String getStopId() {
-        return stopId;
-    }
-
-    public String getStopSequence() {
-        return stopSequence;
-    }
-
-    public String getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public String getShapeDistTraveled() {
-        return shapeDistTraveled;
-    }
-
-    public LocalDateTime getArrivalDateTime() {
-        return arrivalDateTime;
-    }
-
-    // costruttore
+    /**
+     * Costruttore della classe StopTime.
+     * Converte l'orario di arrivo in formato LocalDateTime, gestendo anche orari oltre le 23.
+     * @param tripId ID della corsa
+     * @param stopId ID della fermata
+     * @param stopSequence numero progressivo della fermata nel trip
+     * @param arrivalTime orario di arrivo alla fermata (formato stringa)
+     * @param shapeDistTraveled distanza percorsa dal capolinea
+     */
     public StopTime(String tripId, String stopId, String stopSequence, String arrivalTime, String shapeDistTraveled) {
         this.tripId = tripId;
         this.stopId = stopId;
@@ -48,8 +38,7 @@ public class StopTime {
         this.shapeDistTraveled = shapeDistTraveled;
 
         try {
-            // converte l'arrivalTime nel tipo LocalDateTime
-            //String appArrivalTime = elemento.getArrivalTime();
+            // Converte l'arrivalTime nel tipo LocalDateTime
             String appArrivalTime = this.arrivalTime;
             String h = appArrivalTime.substring(0,2);
             int h_i = Integer.parseInt(h);
@@ -59,21 +48,63 @@ public class StopTime {
             int s_i = Integer.parseInt(s);
             LocalDateTime adesso = LocalDateTime.now();
 
-            if (h_i>23) // se notazione ora >23 è un ora del giorno dopo
-                // va rinormalizzata l'ora e incrementato di 1 il giorno
-                {
-                int delta_h = h_i-23; // delta_h = 1-> 24 -> 00 del giorno dopo , delta_h = 2 -> 01 del giorno dopo , etc.
-                     arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), delta_h, m_i, s_i).plusDays(1);
+            if (h_i > 23) {
+                // Se notazione ora >23 è un'ora del giorno dopo
+                int delta_h = h_i - 23;
+                arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), delta_h, m_i, s_i).plusDays(1);
+            } else {
+                arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
             }
-            else  arrivalDateTime = LocalDateTime.of(adesso.getYear(), adesso.getMonthValue(), adesso.getDayOfMonth(), h_i, m_i, s_i);
-
-
-
         } catch (Exception e) {
-
-            System.out.println("Ora arrivalTime scartata: "+arrivalTime);
+            System.out.println("Ora arrivalTime scartata: " + arrivalTime);
         }
+    }
 
+    /**
+     * Restituisce l'ID della corsa.
+     * @return ID della corsa
+     */
+    public String getTripId() {
+        return tripId;
+    }
 
-    } // fine costruttore
-} // fine classe
+    /**
+     * Restituisce l'ID della fermata.
+     * @return ID della fermata
+     */
+    public String getStopId() {
+        return stopId;
+    }
+
+    /**
+     * Restituisce il numero progressivo della fermata nel trip.
+     * @return sequenza della fermata
+     */
+    public String getStopSequence() {
+        return stopSequence;
+    }
+
+    /**
+     * Restituisce l'orario di arrivo alla fermata (formato stringa).
+     * @return orario di arrivo
+     */
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    /**
+     * Restituisce la distanza percorsa dal capolinea.
+     * @return distanza percorsa
+     */
+    public String getShapeDistTraveled() {
+        return shapeDistTraveled;
+    }
+
+    /**
+     * Restituisce l'orario di arrivo alla fermata in formato LocalDateTime.
+     * @return orario di arrivo come LocalDateTime
+     */
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
+    }
+}
