@@ -59,8 +59,13 @@ package it.uniroma.di.mdp.francesco;
                         allStopTimes = new StopTimes();
                         allStopTimes.loadFromFile(gp.getFolderPath() + "/stop_times.txt");
                         currentRouteId = "";
-                        isOnline = true;
+                        isOnline = OnlineStatusChecker.isOnline();
                         SwingUtilities.invokeLater(() -> {
+                            if (isOnline) {
+                                JOptionPane.showMessageDialog(null, "Sei online!", "Stato connessione", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Nessuna connessione a Internet.", "Stato connessione", JOptionPane.WARNING_MESSAGE);
+                            }
                             JFrame frame = new JFrame(gp.FRAME_TITLE);
                             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             frame.setSize(gp.FRAME_WIDTH, gp.FRAME_HEIGHT);
