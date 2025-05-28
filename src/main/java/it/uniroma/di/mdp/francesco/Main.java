@@ -22,6 +22,8 @@ public class Main {
     private static JPanel leftPanel;
     private static JLabel statusLabel;
     private static Stops allStops;
+    private static final Icon redCircleIcon = new ImageIcon("./icon/redCircle.png");
+    private static final Icon greenCircleIcon = new ImageIcon("./icon/greenCircle.png");
     /**
      * Collezione di tutte le linee caricate.
      */
@@ -73,9 +75,11 @@ public class Main {
         isOnline = OnlineStatusChecker.isOnline();
         SwingUtilities.invokeLater(() -> {
             if (isOnline) {
-                statusLabel.setText("Online \uD83D\uDFE2");
+                statusLabel.setText("Online");
+                statusLabel.setIcon(greenCircleIcon);
             } else {
-                statusLabel.setText("Offline \uD83D\uDD34");
+                statusLabel.setText("Offline");
+                statusLabel.setIcon(redCircleIcon);
             }
             JFrame frame = new JFrame(gp.FRAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -376,9 +380,11 @@ public class Main {
     {
         isOnline = OnlineStatusChecker.isOnline();
         if (isOnline) {
-            statusLabel.setText("Online \uD83D\uDFE2");
+            statusLabel.setText("Online");
+            statusLabel.setIcon(greenCircleIcon);
         } else {
-            statusLabel.setText("Offline \uD83D\uDD34");
+            statusLabel.setText("Offline");
+            statusLabel.setIcon(redCircleIcon);
         }
 
     }
