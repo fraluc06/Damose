@@ -1,5 +1,7 @@
 package it.uniroma.di.mdp.francesco;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.viewer.*;
@@ -48,6 +50,11 @@ public class Main {
      * @param args argomenti da linea di comando (non usati)
      */
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         StaticGTFSDownloader downloader = new StaticGTFSDownloader(gp.getFileURL(), gp.getMd5URL(), gp.getFolderPath());
         try {
             boolean downloaded = downloader.downloadAndUnzipIfNeeded();
