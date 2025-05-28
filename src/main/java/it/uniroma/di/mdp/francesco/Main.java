@@ -20,7 +20,7 @@ public class Main {
     private static JXMapViewer mapViewer;
     private static final GlobalParameters gp = new GlobalParameters();
     private static JPanel leftPanel;
-
+    private static JLabel statusLabel;
     private static Stops allStops;
     /**
      * Collezione di tutte le linee caricate.
@@ -50,6 +50,7 @@ public class Main {
         try {
             boolean downloaded = downloader.downloadAndUnzipIfNeeded();
             if (downloaded) {
+
                 System.out.println("Dati non presenti o non aggiornati, sto scaricando i dati...");
                 System.out.println("Dati aggiornati.");
             } else {
@@ -68,12 +69,13 @@ public class Main {
         allStopTimes = new StopTimes();
         allStopTimes.loadFromFile(gp.getFolderPath() + "/stop_times.txt");
         currentRouteId = "";
+        statusLabel = new JLabel(); // label stato online/offline
         isOnline = OnlineStatusChecker.isOnline();
         SwingUtilities.invokeLater(() -> {
             if (isOnline) {
-                JOptionPane.showMessageDialog(null, "Sei online!", "Stato connessione", JOptionPane.INFORMATION_MESSAGE);
+                statusLabel.setText("Online \uD83D\uDFE2");
             } else {
-                JOptionPane.showMessageDialog(null, "Nessuna connessione a Internet.", "Stato connessione", JOptionPane.WARNING_MESSAGE);
+                statusLabel.setText("Offline \uD83D\uDD34");
             }
             JFrame frame = new JFrame(gp.FRAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,7 +109,8 @@ public class Main {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    updateBusPositions();
+                    updateBusPositions(); // aggiorna le posizioni dei bus nella mappa
+                    updateStatus(); // verifica se è connesso online
                 }
             }, 0, gp.TIMER_DELAY_MS);
         });
@@ -127,6 +130,7 @@ public class Main {
         JButton leftButton = createButton("←");
         JButton rightButton = createButton("→");
 
+
         upButton.addActionListener(e -> panMap(0, gp.PAN_DELTA));
         downButton.addActionListener(e -> panMap(0, -gp.PAN_DELTA));
         leftButton.addActionListener(e -> panMap(-gp.PAN_DELTA, 0));
@@ -141,15 +145,17 @@ public class Main {
                 searchButton.setText("Ricerca");
             }
         });
+
         panel.add(searchButton);
         panel.add(upButton);
         panel.add(downButton);
         panel.add(leftButton);
         panel.add(rightButton);
 
+
         JPanel zoomPanel = createZoomPanel();
         panel.add(zoomPanel);
-
+        panel.add(statusLabel);
         return panel;
     }
 
@@ -364,6 +370,17 @@ public class Main {
     private static void updateBusPositions() {
         Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions(currentRouteId);
         displayBusWaypoints(busWaypoints);
+    }
+
+    private static void updateStatus()
+    {
+        isOnline = OnlineStatusChecker.isOnline();
+        if (isOnline) {
+            statusLabel.setText("Online \uD83D\uDFE2");
+        } else {
+            statusLabel.setText("Offline \uD83D\uDD34");
+        }
+
     }
 
     /**
