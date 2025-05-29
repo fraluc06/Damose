@@ -136,6 +136,7 @@ public class Main {
         JPanel panel = new JPanel();
         panel.setBackground(gp.NAVIGATION_PANEL_COLOR);
         JButton searchButton = new JButton("Ricerca");
+        searchButton.setPreferredSize(new Dimension(gp.SEARCH_BUTTON_SIZE));
         JButton upButton = createButton("↑");
         JButton downButton = createButton("↓");
         JButton leftButton = createButton("←");

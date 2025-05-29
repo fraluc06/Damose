@@ -54,6 +54,7 @@ public class GlobalParameters {
      * Dimensione standard dei bottoni.
      */
     public final Dimension BUTTON_SIZE = new Dimension(60, 30);
+    public final Dimension SEARCH_BUTTON_SIZE = new Dimension(80, 30);
 
     /**
      * URL del file GTFS.

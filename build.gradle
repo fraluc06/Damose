@@ -23,5 +23,5 @@ application {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform() 
 }
