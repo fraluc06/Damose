@@ -1,9 +1,26 @@
+# Esclude la cartella di configurazione di IntelliJ IDEA (impostazioni dell'IDE)
 .idea
+
+# Esclude la cartella di configurazione di Gradle (cache e file temporanei)
 .gradle
+
+# Esclude la cartella di output della build di Gradle
 build
+
+# Esclude cartelle specifiche del progetto, probabilmente generate o temporanee
 rome_static_gtfs
 tileCache
 
-### Mac OS ###
+# Esclude tutti i file nella cartella docs
+docs/*
+
+# Includi file specifici nella cartella docs (eccezioni alle regole precedenti)
+!docs/*.drawio
+!docs/*.pdf
+!docs/*.docx
+
+# Esclude file di sistema di macOS
 .DS_Store
+
+# Esclude tutti i file compilati Java
 *.class
