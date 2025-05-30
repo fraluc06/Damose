@@ -3,11 +3,13 @@ package it.uniroma.di.mdp.francesco;
 import com.formdev.flatlaf.FlatLightLaf;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.cache.FileBasedLocalCache;
 import org.jxmapviewer.viewer.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -132,8 +134,11 @@ public class Main {
             frame.add(leftPanel, BorderLayout.WEST);
             frame.add(mainPanel, BorderLayout.CENTER);
 
+            // Inizializzazione della mappa e della cache
+            File cacheDir = new File("./tileCache");
             TileFactoryInfo info = new OSMTileFactoryInfo();
             DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+            tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
 
             mapViewer = new JXMapViewer();
             mapViewer.setTileFactory(tileFactory);
@@ -276,7 +281,7 @@ public class Main {
         panel.add(Box.createVerticalStrut(10));
         panel.add(resultArea);
 
-        // Bottoniper i preferiti
+        // Bottoni per i preferiti
         JButton addFavButton = new JButton("Aggiungi ai preferiti");
         JButton removeFavButton = new JButton("Rimuovi dai preferiti");
         JButton showFavButton = new JButton("Mostra preferiti");
