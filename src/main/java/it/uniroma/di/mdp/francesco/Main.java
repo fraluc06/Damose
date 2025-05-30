@@ -417,8 +417,14 @@ public class Main {
 
         // Mostra/nascondi preferiti
         showFavButton.addActionListener(e -> {
-            updateFavList.run();
-            favScroll.setVisible(!favScroll.isVisible());
+            boolean isVisible = !favScroll.isVisible();
+            favScroll.setVisible(isVisible);
+            if (isVisible) {
+                updateFavList.run(); // aggiorna la lista solo quando la si mostra
+                showFavButton.setText("Chiudi preferiti");
+            } else {
+                showFavButton.setText("Mostra preferiti");
+            }
             panel.revalidate();
             panel.repaint();
         });
