@@ -285,12 +285,16 @@ public class Main {
         JButton addFavButton = new JButton("Aggiungi ai preferiti");
         JButton removeFavButton = new JButton("Rimuovi dai preferiti");
         JButton showFavButton = new JButton("Mostra preferiti");
-        addFavButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        removeFavButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showFavButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(addFavButton);
-        panel.add(removeFavButton);
-        panel.add(showFavButton);
+        // Pannello orizzontale per i bottoni dei preferiti
+        Box favButtonBox = Box.createHorizontalBox();
+        favButtonBox.add(Box.createHorizontalGlue());
+        favButtonBox.add(showFavButton);
+        favButtonBox.add(Box.createHorizontalStrut(5));
+        favButtonBox.add(addFavButton);
+        favButtonBox.add(Box.createHorizontalStrut(5));
+        favButtonBox.add(removeFavButton);
+        favButtonBox.add(Box.createHorizontalGlue());
+        panel.add(favButtonBox);
 
         // Lista preferiti
         DefaultListModel<String> favListModel = new DefaultListModel<>();
@@ -426,7 +430,7 @@ public class Main {
             favScroll.setVisible(isVisible);
             if (isVisible) {
                 updateFavList.run(); // aggiorna la lista solo quando la si mostra
-                showFavButton.setText("Chiudi preferiti");
+                showFavButton.setText("Nascondi preferiti");
             } else {
                 showFavButton.setText("Mostra preferiti");
             }
