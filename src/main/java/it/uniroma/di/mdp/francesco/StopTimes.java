@@ -82,7 +82,12 @@ public class StopTimes {
      * @return lista di StopTime per la fermata specificata
      */
     public List<StopTime> getStoptimesFromStopId(String stopId) {
-        return stopIdMap.getOrDefault(stopId, Collections.emptyList());
+        LocalDateTime adesso = LocalDateTime.now();
+        List<StopTime> result = new ArrayList<>();
+        for (StopTime st : stopIdMap.getOrDefault(stopId, Collections.emptyList())) {
+            result.add(st);
+        }
+        return result;
     }
 
     /**

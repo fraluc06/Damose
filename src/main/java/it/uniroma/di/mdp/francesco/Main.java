@@ -63,10 +63,21 @@ public class Main {
      * Collezione di tutti gli orari di fermata caricati.
      */
     private static StopTimes allStopTimes;
+
+    /**
+     * Collezione degli orari di fermata selezionati in base alla ricerca.
+     */
+    public static List<StopTime> selectedStopTimes;
+
     /**
      * RouteId corrente, risultato del filtro di ricerca.
      */
     private static String currentRouteId;
+
+    /**
+     * StopId corrente, risultato del filtro di ricerca.
+     */
+    private static String currentStopId;
     /**
      * Flag che indica se l'applicazione è in modalità online.
      */
@@ -82,7 +93,7 @@ public class Main {
 
     private  static Timer timer = new Timer();
 
-    private static Boolean stopTimer = false; // interrompe il timer
+    private static Boolean stopTimer = true; // interrompe il timer
     /**
      * Metodo principale di avvio dell'applicazione.
      *
@@ -115,6 +126,8 @@ public class Main {
         allTrips.loadFromFile(gp.getFolderPath() + "/trips.txt");
         allStopTimes = new StopTimes();
         allStopTimes.loadFromFile(gp.getFolderPath() + "/stop_times.txt");
+
+
         currentRouteId = "";
         statusLabel = new JLabel(); // label stato online/offline
         isOnline = OnlineStatusChecker.isOnline();
@@ -341,48 +354,64 @@ public class Main {
             // Ricerca di una fermata
             Stop foundStop = allStops.searchStop(searchText);
             if (foundStop != null) {
-                resultArea.setText("Fermata trovata:" + foundStop.getStopName() + "ID: " + foundStop.getStopId());
+                resultArea.setText("Fermata trovata: " + foundStop.getStopName() + " ID: " + foundStop.getStopId());
                 currentRouteId = "";
+                currentStopId =  foundStop.getStopId();
+                // Se è offline allora visualizza dai dati statici
+                if (!isOnline) {
+                    // Setta la posizione della mappa sulla fermata trovata
+                    Set<BusWaypoint> waypoints = new HashSet<>();
+                    waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
+                    painter.setWaypoints(waypoints);
+                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    mapViewer.setOverlayPainter(painter);
 
-                // Setta la posizione della mappa sulla fermata trovata
-                Set<BusWaypoint> waypoints = new HashSet<>();
-                waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
-                WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
-                painter.setWaypoints(waypoints);
-                mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
-                mapViewer.setOverlayPainter(painter);
+                    // Ottieni gli orari di arrivo per la fermata trovata entro i prossimi 30 minuti
+                    List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId(), 30);
+                    tripTable.setVisible(true);
+                    tableScroll.setVisible(true);
+                    String[] columns = {"Linea", "Corsa", "Orario di arrivo", "Attesa (minuti)", "Tipologia"};
+                    Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
 
-                // Ottieni gli orari di arrivo per la fermata trovata entro i prossimi 30 minuti
-                List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId(), 30);
-                tripTable.setVisible(true);
-                tableScroll.setVisible(true);
-                String[] columns = {"Linea", "Corsa", "Orario di arrivo", "Attesa (minuti)", "Tipologia"};
-                Object[][] data = new Object[stopTimeListOfStopId.size()][columns.length];
-
-                for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
-                    LocalDateTime ora = LocalDateTime.now();
-                    StopTime st = stopTimeListOfStopId.get(i);
-                    Duration differenza = Duration.between(ora, st.getArrivalDateTime());
-                    long minuti = differenza.toMinutes();
-                    String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
-                    Route curRoute = allRoutes.searchRoute(curRouteId);
-                    data[i][0] = curRouteId;
-                    data[i][1] = st.getTripId();
-                    data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
-                    data[i][3] = minuti;
-                    data[i][4] = curRoute.getRouteTypeDesc();
-                }
-
-                tripTable.setModel(new DefaultTableModel(data, columns) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
+                    for (int i = 0; i < stopTimeListOfStopId.size(); i++) {
+                        LocalDateTime ora = LocalDateTime.now();
+                        StopTime st = stopTimeListOfStopId.get(i);
+                        Duration differenza = Duration.between(ora, st.getArrivalDateTime());
+                        long minuti = differenza.toMinutes();
+                        String curRouteId = allTrips.getRouteIdFromTripId(st.getTripId());
+                        Route curRoute = allRoutes.searchRoute(curRouteId);
+                        data[i][0] = curRouteId;
+                        data[i][1] = st.getTripId();
+                        data[i][2] = st.getArrivalDateTime().format(java.time.format.DateTimeFormatter.ofPattern("d/M/yy HH:mm:ss"));
+                        data[i][3] = minuti;
+                        data[i][4] = curRoute.getRouteTypeDesc();
                     }
-                });
-                tripTable.setCellSelectionEnabled(false);
-                tripTable.setRowSelectionAllowed(false);
-                tripTable.setColumnSelectionAllowed(false);
-                tripTable.setFocusable(false);
+
+                    tripTable.setModel(new DefaultTableModel(data, columns) {
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            return false;
+                        }
+                    });
+                    tripTable.setCellSelectionEnabled(false);
+                    tripTable.setRowSelectionAllowed(false);
+                    tripTable.setColumnSelectionAllowed(false);
+                    tripTable.setFocusable(false);
+                } // fine if (!isOnLine)
+                else { // se invece è online riaggiorna le posizione dal realtime
+                    selectedStopTimes = allStopTimes.getStoptimesFromStopId(currentStopId); // inizializza la collezione degli StopTimes risultato di ricerca
+                    // crea una lista con gli stopTimes che hanno
+
+
+                    // interrompe momentaneamente il timer per evitare conflitti
+                    stopTimer=true;
+                    updateBusPositions();
+                    // riattiva il timer
+                    stopTimer=false;
+
+
+                }
             }
             // altrimenti se deve gestire la ricerca di una linea
             else if ((foundRoute = allRoutes.searchRoute(searchText)) != null) {
@@ -442,6 +471,9 @@ public class Main {
                 JOptionPane.showMessageDialog(panel, "Nessuna corrispondenza trovata");
             }
         });
+
+        // ***** INIZIO GESTIONE PREFERITI *****
+
         // Carica preferiti da file
         File favouritesDir = new File("./favourites");
         if (!favouritesDir.exists()) {
@@ -518,6 +550,7 @@ public class Main {
             favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
             updateFavList.run();
         });
+        // ***** FINE GESTIONE PREFERITI *****
 
         return panel;
     }
@@ -545,6 +578,13 @@ public class Main {
                 refreshTable(busWaypoints);
             } // fine if !isEmpty del busWaypoints
         } // fine if !isEmpty del currentRouteId
+        else if (!currentStopId.isEmpty()) { // se c'è uno stopId corrente
+            Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusStopPositions();
+            if (!busWaypoints.isEmpty()) { //
+                displayBusWaypoints(busWaypoints);
+                refreshTable(busWaypoints);
+            } // fine if !isEmpty del busWaypoints
+        } // fine if !isEmpty del currentStopId
     }
 
     /**
@@ -573,6 +613,7 @@ public class Main {
         mapViewer.setOverlayPainter(painter);
     }
 
+    // aggiorna la tabella con i dati delle corse
     private static void refreshTable(Set<BusWaypoint> waypoints) {
         // Implementa la logica per aggiornare la tabella con i dati delle corse
         tripTable.removeAll();

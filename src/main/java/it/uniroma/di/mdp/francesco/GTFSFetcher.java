@@ -9,8 +9,7 @@ import java.net.http.HttpResponse;
 import java.util.HashSet;
 import java.util.Set;
 
-import static it.uniroma.di.mdp.francesco.Main.allStops;
-import static it.uniroma.di.mdp.francesco.Main.allTrips;
+import static it.uniroma.di.mdp.francesco.Main.*;
 
 /**
  * Classe che si occupa di recuperare le posizioni in tempo reale dei bus tramite il feed GTFS-RT.
@@ -53,8 +52,7 @@ public class GTFSFetcher {
                         System.out.println(filterRouteId+" - entity online " + entity);
                         Trip trip = allTrips.searchTrip(curTripId);
                         trip.setCurrentStopId(vehicle.getStopId());
-                        //Stop curStop = allStops.searchStop(vehicle.getStopId());
-                        //System.out.println("ALLAFERMATA "+curStop.getStopName());
+
                         double lat = vehicle.getPosition().getLatitude();
                         double lon = vehicle.getPosition().getLongitude();
                         busWaypoints.add(new BusWaypoint(lat, lon, trip));
@@ -66,5 +64,49 @@ public class GTFSFetcher {
         }
 
         return busWaypoints;
-    }
-}
+    } // FINE fetchBusPositions
+
+
+    public static Set<BusWaypoint> fetchBusStopPositions() {
+        Set<BusWaypoint> busWaypoints = new HashSet<>();
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(GTFS_RT_URL))
+                    .build();
+
+            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            byte[] responseBody = response.body();
+
+            GtfsRealtime.FeedMessage feed = GtfsRealtime.FeedMessage.parseFrom(responseBody);
+
+            for (GtfsRealtime.FeedEntity entity : feed.getEntityList()) {
+                if (entity.hasVehicle()) {
+                    GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
+                    GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
+                    String curRouteId = tripDescriptor.getRouteId();
+                    String curTripId = tripDescriptor.getTripId();
+                    //tripDescriptor.getStartTime();
+                  for (StopTime st: selectedStopTimes) {
+                        if (st.getTripId().equals(curTripId)) {
+                            System.out.println("StopTime: "+st.getTripId()+" - "+st.getStopId()+" - "+st.getArrivalTime());
+                            Trip trip = allTrips.searchTrip(curTripId);
+                            trip.setCurrentStopId(vehicle.getStopId());
+
+                            double lat = vehicle.getPosition().getLatitude();
+                            double lon = vehicle.getPosition().getLongitude();
+                            busWaypoints.add(new BusWaypoint(lat, lon, trip));
+                        }
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return busWaypoints;
+    } // FINE fetchBusPositions
+
+} // FINE class GTFSFetcher
