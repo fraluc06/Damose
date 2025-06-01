@@ -14,6 +14,11 @@ public class BusWaypoint implements Waypoint {
     private final String label; // aggiunto per personalizzazione
     private final String routeType; // tipo di mezzo per modificare l'icona
 
+    public Trip getTrip() {
+        return trip;
+    }
+
+    private final Trip trip; // oggetto Trip associato al waypoint
     /**
      * Restituisce l'etichetta associata al waypoint.
      *
@@ -42,6 +47,7 @@ public class BusWaypoint implements Waypoint {
         this.position = new GeoPosition(lat, lon);
         this.label = "";
         this.routeType = "";
+        this.trip = null; // nessun trip associato
     }
 
     /**
@@ -57,6 +63,7 @@ public class BusWaypoint implements Waypoint {
         this.position = new GeoPosition(lat, lon);
         this.label = label;
         this.routeType = routeType;
+        this.trip = null;
     }
 
     /**
@@ -72,6 +79,7 @@ public class BusWaypoint implements Waypoint {
         Route route = allRoutes.searchRoute(trip.getRouteId());
         this.label = route.getRouteId() + " (" + trip.getTripId() + ") -" + trip.getTripHeadSign();
         this.routeType = route.getRouteType();
+        this.trip = trip;
     }
 
     /**

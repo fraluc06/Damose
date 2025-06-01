@@ -19,6 +19,16 @@ public class Trip {
      */
     private final String routeId;
 
+    public String getCurrentStopId() {
+        return currentStopId;
+    }
+
+    public void setCurrentStopId(String currentStopId) {
+        this.currentStopId = currentStopId;
+    }
+
+    private  String currentStopId;
+
     /**
      * Costruttore della classe Trip.
      *
@@ -26,10 +36,11 @@ public class Trip {
      * @param tripHeadSign insegna della corsa
      * @param routeId      ID della linea servita dalla corsa
      */
-    public Trip(String tripId, String tripHeadSign, String routeId) {
+    public Trip(String tripId, String tripHeadSign, String routeId, String currentStopId) {
         this.tripId = tripId;
         this.tripHeadSign = tripHeadSign;
         this.routeId = routeId;
+        this.currentStopId = currentStopId;
     }
 
     /**

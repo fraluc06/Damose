@@ -66,7 +66,7 @@ public class Trips {
                     String currentServiceId = fields[1];
                     String currentTripId = fields[2];
                     String currentTripHeadsign = fields[3];
-                    Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId);
+                    Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId,"");
                     this.AddTrip(currentTrip);
                 }
             }

@@ -9,6 +9,7 @@ import java.net.http.HttpResponse;
 import java.util.HashSet;
 import java.util.Set;
 
+import static it.uniroma.di.mdp.francesco.Main.allStops;
 import static it.uniroma.di.mdp.francesco.Main.allTrips;
 
 /**
@@ -46,9 +47,14 @@ public class GTFSFetcher {
                     GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
                     String curRouteId = tripDescriptor.getRouteId();
                     String curTripId = tripDescriptor.getTripId();
-                    System.out.println("entity online " + entity);
+                    //tripDescriptor.getStartTime();
+
                     if (curRouteId.equals(filterRouteId)) {
+                        System.out.println(filterRouteId+" - entity online " + entity);
                         Trip trip = allTrips.searchTrip(curTripId);
+                        trip.setCurrentStopId(vehicle.getStopId());
+                        //Stop curStop = allStops.searchStop(vehicle.getStopId());
+                        //System.out.println("ALLAFERMATA "+curStop.getStopName());
                         double lat = vehicle.getPosition().getLatitude();
                         double lon = vehicle.getPosition().getLongitude();
                         busWaypoints.add(new BusWaypoint(lat, lon, trip));
