@@ -124,11 +124,13 @@ public class Main {
 
             JPanel navigationPanel = createNavigationPanel();
             leftPanel = createLeftPanel();
-            leftPanel.setBackground(gp.LEFT_PANEL_COLOR);
+            // Di base è già bianco
+            //leftPanel.setBackground(gp.LEFT_PANEL_COLOR);
             leftPanel.setVisible(false);
 
             JPanel mainPanel = new JPanel();
-            mainPanel.setBackground(Color.WHITE);
+            // Di base è già bianco
+            //mainPanel.setBackground(Color.WHITE);
 
             frame.add(navigationPanel, BorderLayout.SOUTH);
             frame.add(leftPanel, BorderLayout.WEST);
@@ -326,7 +328,7 @@ public class Main {
             Route foundRoute;
             Stop foundStop = allStops.searchStop(searchText);
             if (foundStop != null) {
-                resultArea.setText("Fermata trovata:\n" + foundStop.getStopName() + "\n" + "ID: " + foundStop.getStopId());
+                resultArea.setText("Fermata trovata:" + foundStop.getStopName() + "ID: " + foundStop.getStopId());
                 currentRouteId = "";
                 foundStop.print();
                 Set<BusWaypoint> waypoints = new HashSet<>();
@@ -367,7 +369,7 @@ public class Main {
                 tripTable.setColumnSelectionAllowed(false);
                 tripTable.setFocusable(false);
             } else if ((foundRoute = allRoutes.searchRoute(searchText)) != null) {
-                resultArea.setText("Linea trovata:\n" + foundRoute.getRouteId() + "\n");
+                resultArea.setText("Linea trovata:" + foundRoute.getRouteId());
                 currentRouteId = foundRoute.getRouteId();
                 List<StopTime> stopTimeListOfTripId = new ArrayList<StopTime>();
                 List<Trip> tripsOfRoute = allTrips.getTripListFromRouteId(foundRoute.getRouteId());
@@ -416,12 +418,22 @@ public class Main {
                 JOptionPane.showMessageDialog(panel, "Nessuna corrispondenza trovata");
             }
         });
-
+        // Carica preferiti da file
+        File favouritesDir = new File("./favourites");
+        if (!favouritesDir.exists()) {
+            favouritesDir.mkdirs(); // Crea la cartella se non esiste
+        }
+        favourites.loadFavouriteStopsFromFile("./favourites/favouriteStops.txt");
+        favourites.loadFavouriteRoutesFromFile("./favourites/favouriteRoutes.txt");
         // Aggiorna lista preferiti
         Runnable updateFavList = () -> {
             favListModel.clear();
-            favourites.getFavouriteLines().forEach((id, name) -> favListModel.addElement("Linea: " + id + " - " + name));
-            favourites.getFavouriteStops().forEach((id, name) -> favListModel.addElement("Fermata: " + id + " - " + name));
+            favourites.getFavouriteRoutes().forEach((id) -> favListModel.addElement("Linea: " + id));
+            favourites.getFavouriteStops().forEach((id) -> {
+                Stop curStop = allStops.searchStop(id);
+                if (curStop != null)
+                    favListModel.addElement("Fermata: " + id + " - " + curStop.getStopName());
+            });
         };
 
         // Mostra/nascondi preferiti
@@ -461,11 +473,11 @@ public class Main {
             Stop foundStop = allStops.searchStop(searchText);
             Route foundRoute = allRoutes.searchRoute(searchText);
             if (foundStop != null) {
-                favourites.addStop(foundStop.getStopId(), foundStop.getStopName());
-                JOptionPane.showMessageDialog(panel, "Fermata aggiunta ai preferiti!");
+                favourites.addStop(foundStop.getStopId());
+                favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
             } else if (foundRoute != null) {
-                favourites.addLine(foundRoute.getRouteId(), foundRoute.getRouteId());
-                JOptionPane.showMessageDialog(panel, "Linea aggiunta ai preferiti!");
+                favourites.addRoute(foundRoute.getRouteId());
+                favourites.saveFavouriteRoutesToFile("./favourites/favouriteRoutes.txt");
             } else {
                 JOptionPane.showMessageDialog(panel, "Nessuna fermata o linea trovata.");
             }
@@ -476,9 +488,10 @@ public class Main {
         removeFavButton.addActionListener(e -> {
             String searchText = searchField.getText().trim().toUpperCase();
             if (searchText.isEmpty()) return;
-            favourites.removeLine(searchText);
+            favourites.removeRoute(searchText);
             favourites.removeStop(searchText);
-            JOptionPane.showMessageDialog(panel, "Rimosso dai preferiti (se presente).");
+            favourites.saveFavouriteRoutesToFile("./favourites/favouriteRoutes.txt");
+            favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
             updateFavList.run();
         });
 

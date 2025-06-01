@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'it.uniroma.di.mdp.francesco'
@@ -20,6 +21,12 @@ dependencies {
 
 application {
     mainClass = 'it.uniroma.di.mdp.francesco.Main'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "it.uniroma.di.mdp.francesco.Main"
+    }
 }
 
 test {

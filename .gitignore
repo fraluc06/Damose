@@ -10,6 +10,7 @@ build
 # Esclude cartelle specifiche del progetto, probabilmente generate o temporanee
 rome_static_gtfs
 tileCache
+favourites
 
 # Esclude tutti i file nella cartella docs
 docs/*
