@@ -78,6 +78,8 @@ public class Main {
      * StopId corrente, risultato del filtro di ricerca.
      */
     private static String currentStopId;
+
+    private static Stop currentFoundStop;
     /**
      * Flag che indica se l'applicazione è in modalità online.
      */
@@ -352,23 +354,25 @@ public class Main {
 
             Route foundRoute;
             // Ricerca di una fermata
-            Stop foundStop = allStops.searchStop(searchText);
-            if (foundStop != null) {
-                resultArea.setText("Fermata trovata: " + foundStop.getStopName() + " ID: " + foundStop.getStopId());
+            //Stop foundStop
+            currentFoundStop = allStops.searchStop(searchText);
+            if (currentFoundStop != null) {
+                resultArea.setText("Fermata trovata: " + currentFoundStop.getStopName() + " ID: " + currentFoundStop.getStopId());
                 currentRouteId = "";
-                currentStopId =  foundStop.getStopId();
+                currentStopId =  currentFoundStop.getStopId();
                 // Se è offline allora visualizza dai dati statici
                 if (!isOnline) {
-                    // Setta la posizione della mappa sulla fermata trovata
+                    // Crea il waypoint della fermata e centra la posizione della mappa sulla fermata trovata
                     Set<BusWaypoint> waypoints = new HashSet<>();
-                    waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    waypoints.add(new BusWaypoint(Double.parseDouble(currentFoundStop.getStopLat()), Double.parseDouble(currentFoundStop.getStopLon())));
                     WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
                     painter.setWaypoints(waypoints);
-                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(currentFoundStop.getStopLat()), Double.parseDouble(currentFoundStop.getStopLon())));
                     mapViewer.setOverlayPainter(painter);
 
                     // Ottieni gli orari di arrivo per la fermata trovata entro i prossimi 30 minuti
-                    List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(foundStop.getStopId(), 30);
+                    List<StopTime> stopTimeListOfStopId = allStopTimes.getStoptimesFromStopId(currentFoundStop.getStopId(), 30);
+                    // Scrivi i dati nella tabella
                     tripTable.setVisible(true);
                     tableScroll.setVisible(true);
                     String[] columns = {"Linea", "Corsa", "Orario di arrivo", "Attesa (minuti)", "Tipologia"};
@@ -401,11 +405,18 @@ public class Main {
                 } // fine if (!isOnLine)
                 else { // se invece è online riaggiorna le posizione dal realtime
                     selectedStopTimes = allStopTimes.getStoptimesFromStopId(currentStopId); // inizializza la collezione degli StopTimes risultato di ricerca
-                    // crea una lista con gli stopTimes che hanno
+                    // crea una lista con gli stopTimes che hanno la fermata trovata
 
 
                     // interrompe momentaneamente il timer per evitare conflitti
                     stopTimer=true;
+                    // Crea il waypoint della fermata e centra la posizione della mappa sulla fermata trovata
+                   // Set<BusWaypoint> waypoints = new HashSet<>();
+                    //waypoints.add(new BusWaypoint(Double.parseDouble(foundStop.getStopLat()), Double.parseDouble(foundStop.getStopLon())));
+                   // WaypointPainter<BusWaypoint> painter = new WaypointPainter<>();
+                   // painter.setWaypoints(waypoints);
+                    mapViewer.setAddressLocation(new GeoPosition(Double.parseDouble(currentFoundStop.getStopLat()), Double.parseDouble(currentFoundStop.getStopLon())));
+                    //mapViewer.setOverlayPainter(painter);
                     updateBusPositions();
                     // riattiva il timer
                     stopTimer=false;
@@ -514,10 +525,12 @@ public class Main {
                     String id = selected.split(" ")[1];
                     searchField.setText(id);
                     searchButton.doClick();
+                    favList.clearSelection();
                 } else if (selected.startsWith("Fermata: ")) {
                     String id = selected.split(" ")[1];
                     searchField.setText(id);
                     searchButton.doClick();
+                    favList.clearSelection();
                 }
             }
         });
@@ -581,6 +594,8 @@ public class Main {
         else if (!currentStopId.isEmpty()) { // se c'è uno stopId corrente
             Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusStopPositions();
             if (!busWaypoints.isEmpty()) { //
+                busWaypoints.add(new BusWaypoint(Double.parseDouble(currentFoundStop.getStopLat()), Double.parseDouble(currentFoundStop.getStopLon()),currentFoundStop.getStopName(),"9"));
+
                 displayBusWaypoints(busWaypoints);
                 refreshTable(busWaypoints);
             } // fine if !isEmpty del busWaypoints
@@ -619,7 +634,7 @@ public class Main {
         tripTable.removeAll();
         tripTable.setVisible(true);
         tableScroll.setVisible(true);
-        String[] columns = {"Linea", "Corsa", "Direzione","Fermata"};
+        String[] columns = {"Linea", "Corsa", "Direzione","Fermata","Arrivo stimato"};
         Object[][] data = new Object[waypoints.size()][columns.length];
         int i = 0;
         for (BusWaypoint waypoint : waypoints) {
@@ -630,7 +645,17 @@ public class Main {
                 data[i][1] = trip.getTripId();
                 data[i][2] = trip.getTripHeadSign();
                 Stop curStop = allStops.searchStop(trip.getCurrentStopId());
+
                 data[i][3] =  curStop.getStopName();
+                int curStopS = trip.getCurrentStopSequence();
+                int tarStopS = trip.getTargetStopSequence();
+                int diffStop = tarStopS - curStopS;
+                if (diffStop==0)
+                    data[i][4] = "In arrivo";
+                else {  int tempo = diffStop * 2; // 2 minuti per ogni fermata mancante da fare
+                       data[i][4] = Integer.toString(tempo)+" min";
+                }
+
                 i++;
             }
         }

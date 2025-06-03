@@ -49,8 +49,8 @@ public class GTFSFetcher {
                     //tripDescriptor.getStartTime();
 
                     if (curRouteId.equals(filterRouteId)) {
-                        System.out.println(filterRouteId+" - entity online " + entity);
-                        Trip trip = allTrips.searchTrip(curTripId);
+                        //System.out.println(filterRouteId+" - entity online " + entity);
+                        Trip trip = Main.allTrips.searchTrip(curTripId);
                         trip.setCurrentStopId(vehicle.getStopId());
 
                         double lat = vehicle.getPosition().getLatitude();
@@ -80,23 +80,31 @@ public class GTFSFetcher {
             byte[] responseBody = response.body();
 
             GtfsRealtime.FeedMessage feed = GtfsRealtime.FeedMessage.parseFrom(responseBody);
-
+            System.out.println("NUOVO FEED\n");
             for (GtfsRealtime.FeedEntity entity : feed.getEntityList()) {
                 if (entity.hasVehicle()) {
                     GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
                     GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
                     String curRouteId = tripDescriptor.getRouteId();
                     String curTripId = tripDescriptor.getTripId();
+                    int cur_stop_seq = vehicle.getCurrentStopSequence();
                     //tripDescriptor.getStartTime();
-                  for (StopTime st: selectedStopTimes) {
+                  for (StopTime st: Main.selectedStopTimes) {
                         if (st.getTripId().equals(curTripId)) {
-                            System.out.println("StopTime: "+st.getTripId()+" - "+st.getStopId()+" - "+st.getArrivalTime());
-                            Trip trip = allTrips.searchTrip(curTripId);
-                            trip.setCurrentStopId(vehicle.getStopId());
+                            System.out.println("-- Trip: "+st.getTripId()+" - "+st.getStopId()+" - curSTOPSEQ/STOPSEQ:  "+Integer.toString(cur_stop_seq)+"/"+st.getStopSequence()+" - DistTrav. : "+st.getShapeDistTraveled()+" - "+st.getShapeDistTraveled()+" - "+st.getArrivalTime());
 
-                            double lat = vehicle.getPosition().getLatitude();
-                            double lon = vehicle.getPosition().getLongitude();
-                            busWaypoints.add(new BusWaypoint(lat, lon, trip));
+                            int stopSEQ = Integer.valueOf(st.getStopSequence());
+                           // solo se il mezzo deve ancora arrivare alla fermata considerata
+                            if (cur_stop_seq<=stopSEQ) {
+                                Trip trip = Main.allTrips.searchTrip(curTripId);
+                                trip.setCurrentStopId(vehicle.getStopId());
+                                trip.setCurrentStopSequence(cur_stop_seq);
+                                trip.setTargetStopSequence(Integer.parseInt(st.getStopSequence()));
+                                double lat = vehicle.getPosition().getLatitude();
+                                double lon = vehicle.getPosition().getLongitude();
+                                busWaypoints.add(new BusWaypoint(lat, lon, trip));
+                            }
+
                         }
                     }
 
