@@ -525,10 +525,12 @@ public class Main {
                     String id = selected.split(" ")[1];
                     searchField.setText(id);
                     searchButton.doClick();
+                    favList.clearSelection();
                 } else if (selected.startsWith("Fermata: ")) {
                     String id = selected.split(" ")[1];
                     searchField.setText(id);
                     searchButton.doClick();
+                    favList.clearSelection();
                 }
             }
         });
