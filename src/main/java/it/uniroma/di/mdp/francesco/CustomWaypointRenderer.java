@@ -26,9 +26,11 @@ public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
         Icon iconBUS = new ImageIcon("./icon/iconBUS.png");
         Icon iconMETRO = new ImageIcon("./icon/iconMETRO.png");
         Icon iconTRAM = new ImageIcon("./icon/iconTRAM.png");
+        Icon iconFERMATA = new ImageIcon("./icon/iconFERMATA.png");
         mappaIcon.put("0", iconTRAM);
         mappaIcon.put("1", iconMETRO);
         mappaIcon.put("3", iconBUS);
+        mappaIcon.put("9", iconFERMATA);
     }
 
     /**

@@ -27,7 +27,30 @@ public class Trip {
         this.currentStopId = currentStopId;
     }
 
+    // fermata corrente della corsa
     private  String currentStopId;
+
+    public int getCurrentStopSequence() {
+        return currentStopSequence;
+    }
+
+    public void setCurrentStopSequence(int currentStopSequence) {
+        this.currentStopSequence = currentStopSequence;
+    }
+
+    // stop sequence corrente
+    private int currentStopSequence;
+
+    public int getTargetStopSequence() {
+        return targetStopSequence;
+    }
+
+    public void setTargetStopSequence(int targetStopSequence) {
+        this.targetStopSequence = targetStopSequence;
+    }
+
+    // target stop sequence della fermata di riferimento
+    private int targetStopSequence;
 
     /**
      * Costruttore della classe Trip.
@@ -41,6 +64,8 @@ public class Trip {
         this.tripHeadSign = tripHeadSign;
         this.routeId = routeId;
         this.currentStopId = currentStopId;
+        this.currentStopSequence = 0;
+        this.targetStopSequence = 0;
     }
 
     /**

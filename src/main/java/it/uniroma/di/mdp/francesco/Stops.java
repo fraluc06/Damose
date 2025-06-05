@@ -84,6 +84,22 @@ public class Stops {
         return null;
     }
 
+
+    public List<Stop> searchStopList(String searchString) {
+        List<Stop> result = new ArrayList<Stop>();
+        for (Stop stop : listOfStops) {
+            if (stop.getStopId().equals(searchString)) { // se trova l'occorrenza esatta con lo stopID
+                result.add(stop);
+            } else // altrimenti prova a cercare com substring nella descrizione
+            {
+                int indice = stop.getStopName().indexOf(searchString);
+                if (indice != -1) // se trovata la substring
+                    result.add(stop); // aggiunge la fermata alla lista
+            }
+        }
+        return result;
+    }
+
     /**
      * Stampa su console tutte le fermate presenti nella lista.
      */
