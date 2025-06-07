@@ -368,7 +368,7 @@ public class Main {
                         // prima prova a cercare tra le linee
                         if (!searchAndShowRoute(searchText)) // se non trova una corrispondenza tra le linee
                             searchAndShowStop(searchText); // allora ricerca tra le fermate
-                    } else // altriment ise è offline
+                    } else // altrimenti se è offline
                     {
                         if (!searchAndShowRouteOffline(searchText)) // se non trova una corrispondenza tra le linee
                             searchAndShowStop(searchText); // allora ricerca tra le fermate
@@ -415,32 +415,37 @@ public class Main {
             if (!e.getValueIsAdjusting() && favList.getSelectedValue() != null) {
                 String selected = favList.getSelectedValue();
                 if (selected.startsWith("Linea: ")) {
-                    String id = selected.split(" ")[1];
-                    searchField.setText(id);
+                    String idRoute = selected.split(" ")[1];
+                    searchField.setText(idRoute);
                     searchButton.doClick();
-                    favList.clearSelection();
+                    //favList.clearSelection(); // TOLTA QUESTA ALTRIMENTI NON POSSO TOGLIERE TRA I PREFERITI
                 } else if (selected.startsWith("Fermata: ")) {
-                    String id = selected.split(" ")[1];
-                    searchField.setText(id);
-                    searchButton.doClick();
-                    favList.clearSelection();
+                    String idStop = selected.split(" ")[1];
+                     // QUI MI VISUALIZZA LO STOP CLICCATO DAI PREFERITI
+                    if (isOnline) showStop(idStop);
+                     else showStopOffline(idStop);
                 }
             }
         });
 
         // Aggiungi ai preferiti
         addFavButton.addActionListener(e -> {
-            String searchText = searchField.getText().trim().toUpperCase();
-            if (searchText.isEmpty()) return;
-            Stop foundStop = allStops.searchStop(searchText);
-            Route foundRoute = allRoutes.searchRoute(searchText);
-            if (foundStop != null) {
+
+            String searchRouteText = searchField.getText().trim();
+            String searchStopText = stopList.getSelectedValue();
+            if (searchStopText != null && searchStopText.startsWith("Fermata: ")) {
+                searchStopText = searchStopText.split(" ")[1];
+            }
+
+            Stop foundStop = allStops.searchStop(searchStopText);
+            Route foundRoute = allRoutes.searchRoute(searchRouteText);
+            if (foundStop != null) { // se ho trovato una fermata
                 favourites.addStop(foundStop.getStopId());
                 favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
-            } else if (foundRoute != null) {
+            } else if (foundRoute != null) { // altrimenti se ho trovato una linea
                 favourites.addRoute(foundRoute.getRouteId());
                 favourites.saveFavouriteRoutesToFile("./favourites/favouriteRoutes.txt");
-            } else {
+            } else { // se non ho trovato nè fermata nè linea
                 JOptionPane.showMessageDialog(panel, "Nessuna fermata o linea trovata.");
             }
             updateFavList.run();
@@ -448,12 +453,19 @@ public class Main {
 
         // Rimuovi dai preferiti
         removeFavButton.addActionListener(e -> {
-            String searchText = searchField.getText().trim().toUpperCase();
-            if (searchText.isEmpty()) return;
-            favourites.removeRoute(searchText);
-            favourites.removeStop(searchText);
-            favourites.saveFavouriteRoutesToFile("./favourites/favouriteRoutes.txt");
-            favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
+
+            String favText = favList.getSelectedValue();
+
+                    if (favText.startsWith("Fermata: ")) {
+                        String idStop = favText.split(" ")[1];
+                        favourites.removeStop(idStop);
+                        favourites.saveFavouriteStopsToFile("./favourites/favouriteStops.txt");
+
+                    } else if (favText.startsWith("Linea: ")) {
+                        String idRoute = favText.split(" ")[1];
+                        favourites.removeRoute(idRoute);
+                        favourites.saveFavouriteRoutesToFile("./favourites/favouriteRoutes.txt");
+                    }
             updateFavList.run();
         });
         // ***** FINE GESTIONE PREFERITI *****
@@ -523,7 +535,7 @@ public class Main {
         for (int i = 0; i < searchResultStop.size(); i++) {
 
             Stop sto = searchResultStop.get(i);
-            System.out.println("Stop: " + sto.getStopId() + " Name: " + sto.getStopName()); // DEBUG
+            //System.out.println("Stop: " + sto.getStopId() + " Name: " + sto.getStopName()); // DEBUG
             if (sto != null)
                 stopListModel.addElement("Fermata: " + sto.getStopId() + " - " + sto.getStopName());
         }
@@ -657,7 +669,7 @@ public class Main {
     private static void updateBusPositions() {
 
         if (!currentRouteId.isEmpty()) { // se c'è un routeId corrente
-            // System.out.println("QUI SI Aggiornamento FEED: "+currentRouteId); // DEBUG
+
             Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions(currentRouteId);
             if (!busWaypoints.isEmpty()) { //
                 System.out.println("QUI PURE Aggiornamento FEED: "+currentRouteId); // DEBUG
@@ -667,11 +679,10 @@ public class Main {
             } // fine if !isEmpty del busWaypoints
         } // fine if !isEmpty del currentRouteId
         else if (!currentStopId.isEmpty()) { // se c'è uno stopId corrente
-            System.out.println("QUI SI Aggiornamento FEED: "+currentStopId); // DEBUG
+
             Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusStopPositions();
             if (!busWaypoints.isEmpty()) { //
                 busWaypoints.add(new BusWaypoint(Double.parseDouble(currentFoundStop.getStopLat()), Double.parseDouble(currentFoundStop.getStopLon()),currentFoundStop.getStopName(),"9"));
-                System.out.println("QUI PURE Aggiornamento FEED: "+currentStopId); // DEBUG
                 displayBusWaypoints(busWaypoints);
                 refreshTable(busWaypoints);
             } // fine if !isEmpty del busWaypoints
@@ -715,11 +726,14 @@ public class Main {
         if (!currentStopId.isEmpty())  // se c'è uno stopId corrente visualizza le corse in arrivo alla fermata
         {
             String[] columns = {"Linea", "Corsa", "Direzione", "Fermata", "Arrivo stimato"};
-            Object[][] data = new Object[waypoints.size()][columns.length];
+            Object[][] data = new Object[waypoints.size()-1][columns.length];
             int i = 0;
             for (BusWaypoint waypoint : waypoints) {
+
                 Trip trip = waypoint.getTrip();
-                if (trip != null) {
+                // Se il waypoint ha un trip associato e non è una linea di tipo 9 (cerchio della fermata)
+                if ((trip != null) && waypoint.getRouteType()!="9") {
+
                     // RIEMPIE LA TABELLA CON I DATI DELLA CORSA
                     data[i][0] = trip.getRouteId();
                     data[i][1] = trip.getTripId();
