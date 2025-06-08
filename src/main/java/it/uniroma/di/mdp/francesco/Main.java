@@ -280,6 +280,9 @@ public class Main {
     private static DefaultListModel<String> stopListModel = new DefaultListModel<>();
     private static JList <String> stopList = new JList<>(stopListModel);
     private static JScrollPane stopScroll = new JScrollPane(stopList);
+
+    private static DefaultListModel<String> favListModel = new DefaultListModel<>();
+    private static JList<String> favList = new JList<>(favListModel);
     /**
      * Crea il pannello laterale per la ricerca di fermate e linee e la gestione dei preferiti.
      *
@@ -340,8 +343,7 @@ public class Main {
         // Pannello orizzontale per i bottoni dei preferiti <<<<<<<<<<<
 
         // Pannello Lista dei preferiti >>>>>>>>>>>>>>>>>
-        DefaultListModel<String> favListModel = new DefaultListModel<>();
-        JList<String> favList = new JList<>(favListModel);
+
         favList.setVisibleRowCount(5);
         JScrollPane favScroll = new JScrollPane(favList);
         favScroll.setVisible(false);
@@ -374,7 +376,7 @@ public class Main {
                             searchAndShowStop(searchText); // allora ricerca tra le fermate
 
                     }
-
+                       favList.clearSelection(); // pulisce una eventuale selezione precedente della lista dei preferiti
                 });
         // ***** INIZIO GESTIONE PREFERITI *****
 
@@ -416,12 +418,12 @@ public class Main {
                 String selected = favList.getSelectedValue();
                 if (selected.startsWith("Linea: ")) {
                     String idRoute = selected.split(" ")[1];
-                    searchField.setText(idRoute);
-                    searchButton.doClick();
-                    //favList.clearSelection(); // TOLTA QUESTA ALTRIMENTI NON POSSO TOGLIERE TRA I PREFERITI
+
+                    if (isOnline) searchAndShowRoute(idRoute); // trova una corrispondenza tra le linee
+                      else searchAndShowRouteOffline(idRoute);
+
                 } else if (selected.startsWith("Fermata: ")) {
                     String idStop = selected.split(" ")[1];
-                     // QUI MI VISUALIZZA LO STOP CLICCATO DAI PREFERITI
                     if (isOnline) showStop(idStop);
                      else showStopOffline(idStop);
                 }
@@ -531,7 +533,7 @@ public class Main {
     private static void searchAndShowStop(String searchText) {
         List<Stop> searchResultStop = allStops.searchStopList(searchText.toUpperCase());
         stopListModel.clear();
-
+        favList.clearSelection(); // pulisce una eventuale selezione precedente della lista dei preferiti
         for (int i = 0; i < searchResultStop.size(); i++) {
 
             Stop sto = searchResultStop.get(i);
@@ -671,8 +673,7 @@ public class Main {
         if (!currentRouteId.isEmpty()) { // se c'è un routeId corrente
 
             Set<BusWaypoint> busWaypoints = GTFSFetcher.fetchBusPositions(currentRouteId);
-            if (!busWaypoints.isEmpty()) { //
-                System.out.println("QUI PURE Aggiornamento FEED: "+currentRouteId); // DEBUG
+            if (!busWaypoints.isEmpty()) {
                 displayBusWaypoints(busWaypoints);
                 refreshTable(busWaypoints);
 
@@ -774,10 +775,7 @@ public class Main {
                     data[i][1] = trip.getTripId();
                     data[i][2] = trip.getTripHeadSign();
                     Stop curStop = allStops.searchStop(trip.getCurrentStopId());
-
                     data[i][3] = curStop.getStopName();
-
-
                     i++;
                 }
             }
