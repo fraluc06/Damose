@@ -11,14 +11,14 @@
 
 ## 🛠️ Tecnologie utilizzate
 
-- **Java 17+**
+- **Java 21 LTS**
 - **Swing** per l'interfaccia grafica
-- API ATAC (o altro servizio di trasporto pubblico)
+- Dati GTFS statici e RT di ATAC
 
 ## 📦 Requisiti
 
 - JDK 17 o superiore
-- Connessione a Internet attiva
+- Connessione a Internet attiva (per i dati in tempo reale)
 
 ## 📁 Struttura del progetto
 
