@@ -1,32 +1,38 @@
 package it.uniroma.di.mdp.francesco;
 
 /**
- * Classe che rappresenta una fermata (stop) del sistema GTFS.
- * Contiene informazioni sull'ID, nome, latitudine e longitudine della fermata.
+ * Rappresenta una fermata (stop) del sistema GTFS.
+ * <p>
+ * Ogni oggetto Stop contiene informazioni identificative e geografiche
+ * relative a una fermata del trasporto pubblico, come l'ID, il nome,
+ * la latitudine e la longitudine.
  */
 public class Stop {
 
     /**
-     * ID identificativo della fermata.
+     * Identificativo univoco della fermata.
      */
     private final String stopId;
+
     /**
-     * Nome della fermata.
+     * Nome descrittivo della fermata.
      */
     private final String stopName;
+
     /**
-     * Latitudine della fermata.
+     * Latitudine della fermata (in formato stringa).
      */
     private final String stopLat;
+
     /**
-     * Longitudine della fermata.
+     * Longitudine della fermata (in formato stringa).
      */
     private final String stopLon;
 
     /**
-     * Costruttore della classe Stop.
+     * Costruisce una nuova fermata con i dati specificati.
      *
-     * @param stopId   ID della fermata
+     * @param stopId   identificativo della fermata
      * @param stopName nome della fermata
      * @param stopLat  latitudine della fermata
      * @param stopLon  longitudine della fermata
@@ -39,7 +45,7 @@ public class Stop {
     }
 
     /**
-     * Restituisce l'ID della fermata.
+     * Restituisce l'identificativo della fermata.
      *
      * @return ID della fermata
      */
@@ -77,7 +83,7 @@ public class Stop {
     /**
      * Restituisce la latitudine della fermata come valore double.
      *
-     * @return latitudine della fermata in formato double
+     * @return latitudine in formato double
      */
     public double getDoubleStopLat() {
         return Double.valueOf(stopLat);
@@ -86,7 +92,7 @@ public class Stop {
     /**
      * Restituisce la longitudine della fermata come valore double.
      *
-     * @return longitudine della fermata in formato double
+     * @return longitudine in formato double
      */
     public double getDoubleStopLon() {
         return Double.valueOf(stopLon);

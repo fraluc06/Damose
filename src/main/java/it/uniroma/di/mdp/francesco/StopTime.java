@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 
 /**
  * Classe che rappresenta un orario di fermata (stop_time) nel sistema GTFS.
- * Contiene informazioni sulla corsa, la fermata, la sequenza, l'orario di arrivo e la distanza percorsa.
+ * <p>
+ * Ogni oggetto StopTime contiene informazioni relative a una specifica fermata di una corsa,
+ * inclusi l'ID della corsa, l'ID della fermata, la sequenza della fermata, l'orario di arrivo
+ * (sia come stringa che come LocalDateTime) e la distanza percorsa dal capolinea.
  */
 public class StopTime {
 
@@ -12,35 +15,41 @@ public class StopTime {
      * ID della corsa (trip).
      */
     private final String tripId;
+
     /**
      * ID della fermata (stop).
      */
     private final String stopId;
+
     /**
      * Numero progressivo della fermata nel trip.
      */
     private final String stopSequence;
+
     /**
-     * Orario di arrivo alla fermata (formato stringa originale).
+     * Orario di arrivo alla fermata (formato stringa originale, es. "23:45:00").
      */
     private final String arrivalTime;
+
     /**
      * Orario di arrivo alla fermata in formato LocalDateTime.
      */
     private LocalDateTime arrivalDateTime;
+
     /**
-     * Distanza percorsa dal capolinea.
+     * Distanza percorsa dal capolinea (shape_dist_traveled).
      */
     private final String shapeDistTraveled;
 
     /**
      * Costruttore della classe StopTime.
-     * Converte l'orario di arrivo in formato LocalDateTime, gestendo anche orari oltre le 23.
+     * <p>
+     * Converte l'orario di arrivo in formato LocalDateTime, gestendo anche orari oltre le 23 (giorno successivo).
      *
      * @param tripId            ID della corsa
      * @param stopId            ID della fermata
      * @param stopSequence      numero progressivo della fermata nel trip
-     * @param arrivalTime       orario di arrivo alla fermata (formato stringa)
+     * @param arrivalTime       orario di arrivo alla fermata (formato stringa "HH:mm:ss")
      * @param shapeDistTraveled distanza percorsa dal capolinea
      */
     public StopTime(String tripId, String stopId, String stopSequence, String arrivalTime, String shapeDistTraveled) {
@@ -121,7 +130,7 @@ public class StopTime {
     /**
      * Restituisce l'orario di arrivo alla fermata in formato LocalDateTime.
      *
-     * @return orario di arrivo come LocalDateTime
+     * @return orario di arrivo come LocalDateTime, oppure null se non parsabile
      */
     public LocalDateTime getArrivalDateTime() {
         return arrivalDateTime;

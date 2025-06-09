@@ -2,7 +2,10 @@ package it.uniroma.di.mdp.francesco;
 
 /**
  * Classe che rappresenta una corsa (trip) nel sistema GTFS.
- * Contiene informazioni sull'ID della corsa, l'insegna e la linea servita.
+ * <p>
+ * Ogni oggetto Trip contiene informazioni identificative sulla corsa,
+ * l'insegna (headsign), la linea servita (route_id) e lo stato corrente
+ * relativo alla fermata attuale e a quella di destinazione.
  */
 public class Trip {
 
@@ -10,54 +13,41 @@ public class Trip {
      * ID della corsa.
      */
     private final String tripId;
+
     /**
      * Insegna della corsa (es. "VALLE GIULIA").
      */
     private final String tripHeadSign;
+
     /**
      * ID della linea servita dalla corsa (route_id).
      */
     private final String routeId;
 
-    public String getCurrentStopId() {
-        return currentStopId;
-    }
+    /**
+     * ID della fermata corrente della corsa.
+     */
+    private String currentStopId;
 
-    public void setCurrentStopId(String currentStopId) {
-        this.currentStopId = currentStopId;
-    }
-
-    // fermata corrente della corsa
-    private  String currentStopId;
-
-    public int getCurrentStopSequence() {
-        return currentStopSequence;
-    }
-
-    public void setCurrentStopSequence(int currentStopSequence) {
-        this.currentStopSequence = currentStopSequence;
-    }
-
-    // stop sequence corrente
+    /**
+     * Sequenza della fermata corrente della corsa.
+     */
     private int currentStopSequence;
 
-    public int getTargetStopSequence() {
-        return targetStopSequence;
-    }
-
-    public void setTargetStopSequence(int targetStopSequence) {
-        this.targetStopSequence = targetStopSequence;
-    }
-
-    // target stop sequence della fermata di riferimento
+    /**
+     * Sequenza della fermata di destinazione (target).
+     * La differenza con currentStopSequence permette di calcolare
+     * quante fermate mancano alla destinazione.
+     */
     private int targetStopSequence;
 
     /**
      * Costruttore della classe Trip.
      *
-     * @param tripId       ID della corsa
-     * @param tripHeadSign insegna della corsa
-     * @param routeId      ID della linea servita dalla corsa
+     * @param tripId        ID della corsa
+     * @param tripHeadSign  insegna della corsa
+     * @param routeId       ID della linea servita dalla corsa
+     * @param currentStopId ID della fermata corrente
      */
     public Trip(String tripId, String tripHeadSign, String routeId, String currentStopId) {
         this.tripId = tripId;
@@ -93,5 +83,59 @@ public class Trip {
      */
     public String getRouteId() {
         return routeId;
+    }
+
+    /**
+     * Restituisce l'ID della fermata corrente della corsa.
+     *
+     * @return ID della fermata corrente
+     */
+    public String getCurrentStopId() {
+        return currentStopId;
+    }
+
+    /**
+     * Imposta l'ID della fermata corrente della corsa.
+     *
+     * @param currentStopId nuovo ID della fermata corrente
+     */
+    public void setCurrentStopId(String currentStopId) {
+        this.currentStopId = currentStopId;
+    }
+
+    /**
+     * Restituisce la sequenza della fermata corrente.
+     *
+     * @return sequenza della fermata corrente
+     */
+    public int getCurrentStopSequence() {
+        return currentStopSequence;
+    }
+
+    /**
+     * Imposta la sequenza della fermata corrente.
+     *
+     * @param currentStopSequence nuova sequenza della fermata corrente
+     */
+    public void setCurrentStopSequence(int currentStopSequence) {
+        this.currentStopSequence = currentStopSequence;
+    }
+
+    /**
+     * Restituisce la sequenza della fermata di destinazione.
+     *
+     * @return sequenza della fermata di destinazione
+     */
+    public int getTargetStopSequence() {
+        return targetStopSequence;
+    }
+
+    /**
+     * Imposta la sequenza della fermata di destinazione.
+     *
+     * @param targetStopSequence nuova sequenza della fermata di destinazione
+     */
+    public void setTargetStopSequence(int targetStopSequence) {
+        this.targetStopSequence = targetStopSequence;
     }
 }

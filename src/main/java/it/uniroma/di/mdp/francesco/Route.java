@@ -5,7 +5,11 @@ import java.util.Map;
 
 /**
  * Classe per la rappresentazione dei dati GTFS statici di una linea (route).
- * Contiene informazioni sull'identificativo della linea e sul tipo di mezzo.
+ * <p>
+ * Ogni oggetto Route rappresenta una singola linea del trasporto pubblico,
+ * identificata da un ID e da un tipo (tram, metro, treno, bus).
+ * Fornisce metodi per accedere a queste informazioni e per ottenere
+ * una descrizione testuale del tipo di linea.
  */
 public class Route {
     /**
@@ -42,7 +46,7 @@ public class Route {
     /**
      * Restituisce l'identificativo della linea.
      *
-     * @return routeId della linea
+     * @return l'ID della linea (routeId)
      */
     public String getRouteId() {
         return routeId;

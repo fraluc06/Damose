@@ -6,8 +6,19 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
+/**
+ * Classe di utilità per verificare lo stato della connessione Internet.
+ * Fornisce metodi per controllare se la connessione è attiva effettuando una richiesta HTTP
+ * verso un URL specificato o verso un URL di default (Google).
+ */
 public class OnlineStatusChecker {
+    /**
+     * URL di default utilizzato per il controllo della connessione (Google).
+     */
     private static final String DEFAULT_URL = "https://www.google.com";
+    /**
+     * Timeout massimo per la connessione e la risposta HTTP.
+     */
     private static final Duration TIMEOUT = Duration.ofSeconds(2);
 
     /**

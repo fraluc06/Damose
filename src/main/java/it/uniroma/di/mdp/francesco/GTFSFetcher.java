@@ -9,10 +9,9 @@ import java.net.http.HttpResponse;
 import java.util.HashSet;
 import java.util.Set;
 
-import static it.uniroma.di.mdp.francesco.Main.*;
-
 /**
  * Classe che si occupa di recuperare le posizioni in tempo reale dei bus tramite il feed GTFS-RT.
+ * Fornisce metodi per ottenere i waypoint dei bus filtrando per linea o per fermata.
  */
 public class GTFSFetcher {
     /**
@@ -24,7 +23,7 @@ public class GTFSFetcher {
      * Recupera le posizioni dei bus in tempo reale dal feed GTFS-RT, filtrando per routeId.
      *
      * @param filterRouteId l'identificativo della linea da filtrare
-     * @return un insieme di {@link BusWaypoint} corrispondenti ai bus trovati
+     * @return un insieme di {@link BusWaypoint} corrispondenti ai bus trovati per la linea specificata
      */
     public static Set<BusWaypoint> fetchBusPositions(String filterRouteId) {
         Set<BusWaypoint> busWaypoints = new HashSet<>();
@@ -46,13 +45,9 @@ public class GTFSFetcher {
                     GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
                     String curRouteId = tripDescriptor.getRouteId();
                     String curTripId = tripDescriptor.getTripId();
-                    //tripDescriptor.getStartTime();
-                    //System.out.println(filterRouteId+" - entity online " + entity);
                     if (curRouteId.equals(filterRouteId)) {
-                        //System.out.println(filterRouteId+" - entity online " + entity);
-                        Trip trip = Main.allTrips.searchTrip(curTripId);
+                        Trip trip = Trips.searchTrip(curTripId);
                         trip.setCurrentStopId(vehicle.getStopId());
-
                         double lat = vehicle.getPosition().getLatitude();
                         double lon = vehicle.getPosition().getLongitude();
                         busWaypoints.add(new BusWaypoint(lat, lon, trip));
@@ -64,9 +59,14 @@ public class GTFSFetcher {
         }
 
         return busWaypoints;
-    } // FINE fetchBusPositions
+    }
 
-
+    /**
+     * Recupera le posizioni dei bus in tempo reale dal feed GTFS-RT, filtrando per fermata.
+     * Restituisce i waypoint dei bus che devono ancora arrivare alle fermate selezionate.
+     *
+     * @return un insieme di {@link BusWaypoint} corrispondenti ai bus in arrivo alle fermate selezionate
+     */
     public static Set<BusWaypoint> fetchBusStopPositions() {
         Set<BusWaypoint> busWaypoints = new HashSet<>();
 
@@ -80,29 +80,22 @@ public class GTFSFetcher {
             byte[] responseBody = response.body();
 
             GtfsRealtime.FeedMessage feed = GtfsRealtime.FeedMessage.parseFrom(responseBody);
-            //System.out.println("NUOVO FEED in fetchBusStopPositions\n");
+
             for (GtfsRealtime.FeedEntity entity : feed.getEntityList()) {
                 if (entity.hasVehicle()) {
                     GtfsRealtime.VehiclePosition vehicle = entity.getVehicle();
                     GtfsRealtime.TripDescriptor tripDescriptor = vehicle.getTrip();
                     int direct = tripDescriptor.getDirectionId();
-                    //System.out.println("-- DIRECT: "+Integer.toString(direct));
                     String curRouteId = tripDescriptor.getRouteId();
                     String curTripId = tripDescriptor.getTripId();
                     int cur_stop_seq = vehicle.getCurrentStopSequence();
 
-
-                    //tripDescriptor.getStartTime();
-                 for (StopTime st: Main.selectedStopTimes) {
-                    // System.out.println("-- st.Trip: "+st.getTripId()+"-- curTripId: "+curTripId+" - "+st.getStopId()+"DIR "+ Integer.toString(direct)+ " - curSTOPSEQ/STOPSEQ:  "+Integer.toString(cur_stop_seq)+"/"+st.getStopSequence()+" - DistTrav. : "+st.getShapeDistTraveled()+" - "+st.getShapeDistTraveled()+" - "+st.getArrivalTime());
-
-                     if (st.getTripId().equals(curTripId)) {
-                            //System.out.println("-- Trip: "+st.getTripId()+" - "+st.getStopId()+"DIR "+ Integer.toString(direct)+ " - curSTOPSEQ/STOPSEQ:  "+Integer.toString(cur_stop_seq)+"/"+st.getStopSequence()+" - DistTrav. : "+st.getShapeDistTraveled()+" - "+st.getShapeDistTraveled()+" - "+st.getArrivalTime());
-
+                    for (StopTime st : StopTimes.selectedStopTimes) {
+                        if (st.getTripId().equals(curTripId)) {
                             int stopSEQ = Integer.valueOf(st.getStopSequence());
-                           // solo se il mezzo deve ancora arrivare alla fermata considerata
-                           if (cur_stop_seq<=stopSEQ) {
-                                Trip trip = Main.allTrips.searchTrip(curTripId);
+                            // Solo se il mezzo deve ancora arrivare alla fermata considerata
+                            if (cur_stop_seq <= stopSEQ) {
+                                Trip trip = Trips.searchTrip(curTripId);
                                 trip.setCurrentStopId(vehicle.getStopId());
                                 trip.setCurrentStopSequence(cur_stop_seq);
                                 trip.setTargetStopSequence(Integer.parseInt(st.getStopSequence()));
@@ -110,11 +103,8 @@ public class GTFSFetcher {
                                 double lon = vehicle.getPosition().getLongitude();
                                 busWaypoints.add(new BusWaypoint(lat, lon, trip));
                             }
-
                         }
                     }
-
-
                 }
             }
         } catch (Exception e) {
@@ -122,6 +112,5 @@ public class GTFSFetcher {
         }
 
         return busWaypoints;
-    } // FINE fetchBusPositions
-
-} // FINE class GTFSFetcher
+    }
+}

@@ -44,6 +44,8 @@ public class Routes {
 
     /**
      * Carica le linee da un file CSV GTFS (routes.txt).
+     * Il file deve avere come prima riga l'intestazione e i campi separati da virgola.
+     * Vengono letti solo l'ID della linea (campo 0) e il tipo di linea (campo 4).
      *
      * @param filePath percorso del file da cui caricare le linee
      */
