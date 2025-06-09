@@ -12,14 +12,19 @@ import java.util.Map;
 
 /**
  * Renderer personalizzato per i waypoint sulla mappa.
- * Permette di visualizzare icone diverse in base al tipo di mezzo (bus, metro, tram)
- * e di mostrare un'etichetta sopra l'icona.
+ * Visualizza icone differenti in base al tipo di mezzo (bus, metro, tram, fermata)
+ * e mostra un'etichetta sopra l'icona del waypoint.
  */
 public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
+    /**
+     * Mappa che associa il tipo di mezzo all'icona corrispondente.
+     */
     private final Map<String, Icon> mappaIcon;
 
     /**
-     * Costruttore. Inizializza la mappa delle icone per i diversi tipi di mezzi.
+     * Costruttore della classe.
+     * Inizializza la mappa delle icone per i diversi tipi di mezzi di trasporto.
+     * Le icone vengono caricate dalla cartella ./icon/.
      */
     public CustomWaypointRenderer() {
         mappaIcon = new HashMap<>();
@@ -34,11 +39,12 @@ public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
     }
 
     /**
-     * Disegna il waypoint sulla mappa, mostrando l'icona corrispondente al tipo di mezzo
-     * e l'etichetta associata.
+     * Disegna il waypoint sulla mappa.
+     * Se il waypoint è un'istanza di {@link BusWaypoint}, viene selezionata l'icona in base al tipo di mezzo
+     * e viene disegnata l'etichetta sopra l'icona.
      *
-     * @param g        il contesto grafico
-     * @param map      la mappa su cui disegnare
+     * @param g        il contesto grafico su cui disegnare
+     * @param map      la mappa su cui disegnare il waypoint
      * @param waypoint il waypoint da disegnare
      */
     @Override

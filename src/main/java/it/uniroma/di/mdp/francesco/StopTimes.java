@@ -8,6 +8,7 @@ import java.util.*;
 
 /**
  * Classe che gestisce la collezione degli orari di fermata (stop_times) GTFS.
+ * <p>
  * Permette di aggiungere, cercare, filtrare e caricare gli orari da file.
  */
 public class StopTimes {
@@ -16,14 +17,21 @@ public class StopTimes {
      * Lista di tutti gli orari di fermata caricati.
      */
     private final List<StopTime> listOfStoptimes;
+
     /**
      * Mappa che associa uno stop_id alla lista di StopTime corrispondenti.
      */
     private final Map<String, List<StopTime>> stopIdMap;
+
     /**
      * Mappa che associa un trip_id alla lista di StopTime corrispondenti.
      */
     private final Map<String, List<StopTime>> tripIdMap;
+
+    /**
+     * Collezione degli orari di fermata selezionati in base alla ricerca.
+     */
+    public static List<StopTime> selectedStopTimes;
 
     /**
      * Costruttore della classe StopTimes.
@@ -48,6 +56,9 @@ public class StopTimes {
 
     /**
      * Carica gli orari di fermata da un file CSV GTFS (stop_times.txt).
+     * Il file deve avere la prima riga come intestazione e i campi separati da virgola.
+     * Vengono letti: trip_id (campo 0), arrival_time (campo 1), stop_id (campo 3),
+     * stop_sequence (campo 4), shape_dist_traveled (campo 8).
      *
      * @param filePath percorso del file da cui caricare gli orari
      */

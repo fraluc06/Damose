@@ -29,18 +29,19 @@ Damose/
 │   └── it/uniroma/di/mdp/francesco/damose/
 │       ├── BusWaypoint.java
 │       ├── GlobalParameters.java
+        ├── Favouritess.java
 │       ├── GTFSFetcher.java
-│       ├── MainPage.java
+│       ├── Main.java
+│       ├── OnlineStatusChecker.java
 │       ├── Route.java
 │       ├── Routes.java
-│        ├── StaticGTFSDownloader.java
+│       ├── StaticGTFSDownloader.java
 │       ├── Stop.java
 │       ├── Stops.java
 │       ├── StopTime.java
 │       ├── StopTimes.java
 │       ├── Trip.java
 │       ├── Trips.java
-│       └── BusService.java
 ├── LICENSE.txt
 ├── README.md
 └── ...

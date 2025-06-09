@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Classe che rappresenta la collezione di tutte le corse (trip) del sistema GTFS.
+ * <p>
  * Permette di aggiungere, cercare, stampare e caricare i trip da file.
  */
 public class Trips {
@@ -15,7 +16,7 @@ public class Trips {
     /**
      * Lista di tutte le corse caricate.
      */
-    private final List<Trip> listOfTrips;
+    private static List<Trip> listOfTrips;
 
     /**
      * Costruttore della classe Trips.
@@ -45,6 +46,8 @@ public class Trips {
 
     /**
      * Carica i trip da un file CSV GTFS (trips.txt).
+     * Il file deve avere la prima riga come intestazione e i campi separati da virgola.
+     * Vengono letti: route_id (campo 0), service_id (campo 1), trip_id (campo 2), trip_headsign (campo 3).
      *
      * @param filePath percorso del file da cui caricare i trip
      */
@@ -66,7 +69,7 @@ public class Trips {
                     String currentServiceId = fields[1];
                     String currentTripId = fields[2];
                     String currentTripHeadsign = fields[3];
-                    Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId,"");
+                    Trip currentTrip = new Trip(currentTripId, currentTripHeadsign, currentRouteId, "");
                     this.AddTrip(currentTrip);
                 }
             }
@@ -119,7 +122,7 @@ public class Trips {
      * @param tripId identificativo della corsa
      * @return oggetto Trip corrispondente, oppure null se non trovato
      */
-    public Trip searchTrip(String tripId) {
+    public static Trip searchTrip(String tripId) {
         for (Trip elemento : listOfTrips) {
             if (elemento.getTripId().equals(tripId)) {
                 return elemento;

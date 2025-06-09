@@ -101,7 +101,7 @@ public class StaticGTFSDownloader {
                 return true;
             } else {
                 Files.deleteIfExists(tempFile);
-                throw new IOException("Download failed, status code: " + response.statusCode());
+                throw new IOException("Download fallito, status code: " + response.statusCode());
             }
         }
 
@@ -140,7 +140,14 @@ public class StaticGTFSDownloader {
         }
     }
 
-    // Metodo privato per leggere il contenuto testuale da un URL (il file .md5 remoto)
+    /**
+     * Scarica il contenuto testuale da un URL (ad esempio il file .md5 remoto).
+     *
+     * @param url URL da cui scaricare il testo
+     * @return contenuto testuale scaricato
+     * @throws IOException          in caso di errore di I/O
+     * @throws InterruptedException in caso di interruzione del thread
+     */
     private String downloadAsString(String url) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -152,11 +159,18 @@ public class StaticGTFSDownloader {
         if (response.statusCode() == 200) {
             return response.body();
         } else {
-            throw new IOException("Failed to download MD5, status code: " + response.statusCode());
+            throw new IOException("Impossibile scaricare MD5, status code: " + response.statusCode());
         }
     }
 
-    // Metodo privato per calcolare l'MD5 di un file
+    /**
+     * Calcola l'MD5 di un file locale.
+     *
+     * @param filePath percorso del file
+     * @return stringa MD5 calcolata
+     * @throws IOException              in caso di errore di I/O
+     * @throws NoSuchAlgorithmException se l'algoritmo MD5 non è disponibile
+     */
     private String calculateMD5(Path filePath) throws IOException, NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         try (InputStream is = Files.newInputStream(filePath);
@@ -171,7 +185,12 @@ public class StaticGTFSDownloader {
         return sb.toString();
     }
 
-    // Utility per estrarre il nome del file dall'URL
+    /**
+     * Estrae il nome del file dall'URL.
+     *
+     * @param url URL da cui estrarre il nome file
+     * @return nome del file
+     */
     private String getFileNameFromURL(String url) {
         return url.substring(url.lastIndexOf('/') + 1);
     }

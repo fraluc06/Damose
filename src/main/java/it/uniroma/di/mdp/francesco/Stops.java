@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Classe che gestisce la collezione delle fermate (stop) GTFS.
+ * <p>
  * Permette di aggiungere, cercare, stampare e caricare le fermate da file.
  */
 public class Stops {
@@ -36,6 +37,9 @@ public class Stops {
 
     /**
      * Carica le fermate da un file CSV GTFS (stops.txt).
+     * Il file deve avere la prima riga come intestazione e i campi separati da virgola.
+     * Vengono letti solo l'ID della fermata (campo 0), il nome (campo 2),
+     * la latitudine (campo 4) e la longitudine (campo 5).
      *
      * @param filePath percorso del file da cui caricare le fermate
      */
@@ -84,14 +88,18 @@ public class Stops {
         return null;
     }
 
-
+    /**
+     * Cerca tutte le fermate che corrispondono all'ID esatto o che contengono la stringa di ricerca nel nome.
+     *
+     * @param searchString stringa da cercare (ID o parte del nome)
+     * @return lista di oggetti Stop che corrispondono alla ricerca
+     */
     public List<Stop> searchStopList(String searchString) {
         List<Stop> result = new ArrayList<Stop>();
         for (Stop stop : listOfStops) {
             if (stop.getStopId().equals(searchString)) { // se trova l'occorrenza esatta con lo stopID
                 result.add(stop);
-            } else // altrimenti prova a cercare com substring nella descrizione
-            {
+            } else { // altrimenti prova a cercare come substring nella descrizione
                 int indice = stop.getStopName().indexOf(searchString);
                 if (indice != -1) // se trovata la substring
                     result.add(stop); // aggiunge la fermata alla lista

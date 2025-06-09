@@ -5,7 +5,11 @@ import java.nio.file.Path;
 
 /**
  * Classe che gestisce i parametri globali e le costanti di configurazione
- * per l'applicazione Rome Bus Tracker.
+ * per l'applicazione Damose.
+ * <p>
+ * Fornisce valori predefiniti per dimensioni, colori, coordinate, URL e altri parametri
+ * utilizzati in tutta l'applicazione.
+ * Permette inoltre di gestire dinamicamente il livello di zoom della mappa.
  */
 public class GlobalParameters {
     /**
@@ -14,7 +18,7 @@ public class GlobalParameters {
     private int mapZoom;
 
     /**
-     * Titolo della finestra principale.
+     * Titolo della finestra principale dell'applicazione.
      */
     public final String FRAME_TITLE = "Rome Bus Tracker";
     /**
@@ -42,10 +46,9 @@ public class GlobalParameters {
      */
     public final double ROME_CENTER_LON = 12.5043;
     /**
-     * Delay del timer in millisecondi per l'aggiornamento.
+     * Delay del timer in millisecondi per l'aggiornamento automatico.
      */
     public final int TIMER_DELAY_MS = 15000;
-
     /**
      * Delta di spostamento per il pan della mappa.
      */
@@ -54,10 +57,13 @@ public class GlobalParameters {
      * Dimensione standard dei bottoni.
      */
     public final Dimension BUTTON_SIZE = new Dimension(60, 30);
+    /**
+     * Dimensione del bottone di ricerca.
+     */
     public final Dimension SEARCH_BUTTON_SIZE = new Dimension(120, 30);
 
     /**
-     * URL del file GTFS.
+     * URL del file GTFS da scaricare.
      */
     private final String FILE_URL = "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip";
     /**
@@ -99,7 +105,7 @@ public class GlobalParameters {
     /**
      * Restituisce il livello di zoom della mappa.
      *
-     * @return livello di zoom
+     * @return livello di zoom attuale
      */
     public int getMapZoom() {
         return mapZoom;
@@ -115,7 +121,8 @@ public class GlobalParameters {
     }
 
     /**
-     * Costruttore della classe. Inizializza il livello di zoom a 3.
+     * Costruttore della classe.
+     * Inizializza il livello di zoom a 3.
      */
     public GlobalParameters() {
         mapZoom = 3;
