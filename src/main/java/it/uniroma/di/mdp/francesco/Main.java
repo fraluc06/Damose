@@ -474,7 +474,6 @@ public class Main {
     private static boolean searchAndShowRouteOffline(String searchText) {
         Route foundRoute;
         if ((foundRoute = allRoutes.searchRoute(searchText)) != null) {
-            resultArea.setText("Linea trovata:" + foundRoute.getRouteId());
             currentRouteId = foundRoute.getRouteId();
             List<StopTime> stopTimeListOfTripId = new ArrayList<StopTime>();
             List<Trip> tripsOfRoute = allTrips.getTripListFromRouteId(foundRoute.getRouteId());
@@ -551,7 +550,6 @@ public class Main {
     private static void showStopOffline(String selectedStop) {
         currentFoundStop = allStops.searchStop(selectedStop);
         if (currentFoundStop != null) {
-            resultArea.setText("Fermata trovata: " + currentFoundStop.getStopName() + " ID: " + currentFoundStop.getStopId());
             currentRouteId = "";
             currentStopId = currentFoundStop.getStopId();
             Set<BusWaypoint> waypoints = new HashSet<>();
@@ -599,7 +597,6 @@ public class Main {
     private static void showStop(String selectedStop) {
         currentFoundStop = allStops.searchStop(selectedStop);
         if (currentFoundStop != null) {
-            resultArea.setText("Fermata trovata: " + currentFoundStop.getStopName() + " ID: " + currentFoundStop.getStopId());
             currentRouteId = "";
             currentStopId = currentFoundStop.getStopId();
             StopTimes.selectedStopTimes = allStopTimes.getStoptimesFromStopId(currentStopId);
@@ -619,7 +616,6 @@ public class Main {
     private static boolean searchAndShowRoute(String searchText) {
         Route foundRoute;
         if ((foundRoute = allRoutes.searchRoute(searchText)) != null) {
-            resultArea.setText("Linea trovata:" + foundRoute.getRouteId());
             currentRouteId = foundRoute.getRouteId();
             currentStopId = "";
             if (isOnline) {
