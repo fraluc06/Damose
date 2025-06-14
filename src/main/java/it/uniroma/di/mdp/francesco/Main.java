@@ -102,6 +102,31 @@ public class Main {
     private static Boolean stopTimer = true;
 
     /**
+     * Area di testo per i risultati della ricerca.
+     */
+    private static final JTextArea resultArea = new JTextArea();
+    /**
+     * Modello per la lista delle fermate trovate.
+     */
+    private static final DefaultListModel<String> stopListModel = new DefaultListModel<>();
+    /**
+     * Lista delle fermate trovate.
+     */
+    private static final JList<String> stopList = new JList<>(stopListModel);
+    /**
+     * ScrollPane per la lista delle fermate.
+     */
+    private static final JScrollPane stopScroll = new JScrollPane(stopList);
+    /**
+     * Modello per la lista dei preferiti.
+     */
+    private static final DefaultListModel<String> favListModel = new DefaultListModel<>();
+    /**
+     * Lista dei preferiti.
+     */
+    private static final JList<String> favList = new JList<>(favListModel);
+
+    /**
      * Metodo principale di avvio dell'applicazione.
      * Inizializza look and feel, carica i dati GTFS statici, imposta la GUI e avvia il timer di aggiornamento.
      *
@@ -269,30 +294,6 @@ public class Main {
         return button;
     }
 
-    /**
-     * Area di testo per i risultati della ricerca.
-     */
-    private static final JTextArea resultArea = new JTextArea();
-    /**
-     * Modello per la lista delle fermate trovate.
-     */
-    private static final DefaultListModel<String> stopListModel = new DefaultListModel<>();
-    /**
-     * Lista delle fermate trovate.
-     */
-    private static final JList<String> stopList = new JList<>(stopListModel);
-    /**
-     * ScrollPane per la lista delle fermate.
-     */
-    private static final JScrollPane stopScroll = new JScrollPane(stopList);
-    /**
-     * Modello per la lista dei preferiti.
-     */
-    private static final DefaultListModel<String> favListModel = new DefaultListModel<>();
-    /**
-     * Lista dei preferiti.
-     */
-    private static final JList<String> favList = new JList<>(favListModel);
 
     /**
      * Crea il pannello laterale per la ricerca di fermate e linee e la gestione dei preferiti.

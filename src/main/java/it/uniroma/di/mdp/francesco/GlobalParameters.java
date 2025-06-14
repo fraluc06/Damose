@@ -125,6 +125,6 @@ public class GlobalParameters {
      * Inizializza il livello di zoom a 3.
      */
     public GlobalParameters() {
-        mapZoom = 3;
+        mapZoom = 4;
     }
 }
