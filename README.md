@@ -29,7 +29,7 @@ Damose/
 │   └── it/uniroma/di/mdp/francesco/damose/
 │       ├── BusWaypoint.java
 │       ├── GlobalParameters.java
-        ├── Favouritess.java
+│       ├── Favouritess.java
 │       ├── GTFSFetcher.java
 │       ├── Main.java
 │       ├── OnlineStatusChecker.java
