@@ -133,6 +133,7 @@ public class Main {
      * @param args argomenti da linea di comando (non usati)
      */
     public static void main(String[] args) {
+        System.setProperty("http.agent", "Damose/1.0 (https://github.com/fraluc06/Damose)");
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
@@ -185,7 +186,7 @@ public class Main {
 
             // Inizializzazione della mappa e della cache
             File cacheDir = new File("./tileCache");
-            TileFactoryInfo info = new OSMTileFactoryInfo();
+            TileFactoryInfo info = new OSMTileFactoryInfo("OpenStreetMap", "https://tile.openstreetmap.org");
             DefaultTileFactory tileFactory = new DefaultTileFactory(info);
             tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
             mapViewer = new JXMapViewer();
