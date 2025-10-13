@@ -184,9 +184,11 @@ public class Main {
             frame.add(mainPanel, BorderLayout.CENTER);
 
             // Inizializzazione della mappa e della cache
+            System.setProperty("http.agent", "Damose/1.0 https://github.com/fraluc06/Damose");
             File cacheDir = new File("./tileCache");
-            TileFactoryInfo info = new OSMTileFactoryInfo();
+            TileFactoryInfo info = new OSMTileFactoryInfo("OpenStreetMap", "https://tile.openstreetmap.org");
             DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+            tileFactory.setThreadPoolSize(2);
             tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
             mapViewer = new JXMapViewer();
             mapViewer.setTileFactory(tileFactory);
