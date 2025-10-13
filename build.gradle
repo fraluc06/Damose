@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '9.2.2'
 }
 
 group = 'it.uniroma.di.mdp.francesco'
@@ -12,10 +12,10 @@ repositories {
 }
 
 dependencies {
-    implementation('com.formdev:flatlaf:3.4')
+    implementation('com.formdev:flatlaf:3.6.2')
     implementation('org.jxmapviewer:jxmapviewer2:2.8')
     implementation('org.mobilitydata:gtfs-realtime-bindings:0.0.8')
-    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation platform('org.junit:junit-bom:6.0.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
