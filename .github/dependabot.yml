@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/Rome"
+    reviewers:
+      - "fraluc06"
+    assignees:
+      - "fraluc06"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      minor-patch-updates:
+        update-types:
+          - "minor"
+          - "patch"
