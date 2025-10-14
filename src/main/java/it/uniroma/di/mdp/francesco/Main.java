@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.Arrays;
 
 /**
  * Classe principale dell'applicazione Damose.
@@ -579,6 +580,11 @@ public class Main {
                 data[i][3] = minuti;
                 data[i][4] = curRoute.getRouteTypeDesc();
             }
+            Arrays.sort(data, (row1, row2) -> {
+                Long min1 = (Long) row1[3];
+                Long min2 = (Long) row2[3];
+                return Long.compare(min1, min2);
+            });
             tripTable.setModel(new DefaultTableModel(data, columns) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
@@ -722,6 +728,15 @@ public class Main {
                     i++;
                 }
             }
+            Arrays.sort(data, (row1, row2) -> {
+                String time1 = (String) row1[4];
+                String time2 = (String) row2[4];
+                if ("In arrivo".equals(time1)) return -1;
+                if ("In arrivo".equals(time2)) return 1;
+                int min1 = Integer.parseInt(time1.split(" ")[0]);
+                int min2 = Integer.parseInt(time2.split(" ")[0]);
+                return Integer.compare(min1, min2);
+            });
             tripTable.setModel(new DefaultTableModel(data, columns) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
