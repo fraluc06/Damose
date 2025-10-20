@@ -24,14 +24,14 @@ public class CustomWaypointRenderer implements WaypointRenderer<Waypoint> {
     /**
      * Costruttore della classe.
      * Inizializza la mappa delle icone per i diversi tipi di mezzi di trasporto.
-     * Le icone vengono caricate dalla cartella ./icon/.
+     * Le icone vengono caricate dalle risorse del JAR (/resources/icons/).
      */
     public CustomWaypointRenderer() {
         mappaIcon = new HashMap<>();
-        Icon iconBUS = new ImageIcon("./icon/iconBUS.png");
-        Icon iconMETRO = new ImageIcon("./icon/iconMETRO.png");
-        Icon iconTRAM = new ImageIcon("./icon/iconTRAM.png");
-        Icon iconFERMATA = new ImageIcon("./icon/iconFERMATA.png");
+        Icon iconBUS = new ImageIcon(getClass().getResource("/icons/iconBUS.png"));
+        Icon iconMETRO = new ImageIcon(getClass().getResource("/icons/iconMETRO.png"));
+        Icon iconTRAM = new ImageIcon(getClass().getResource("/icons/iconTRAM.png"));
+        Icon iconFERMATA = new ImageIcon(getClass().getResource("/icons/iconFERMATA.png"));
         mappaIcon.put("0", iconTRAM);
         mappaIcon.put("1", iconMETRO);
         mappaIcon.put("3", iconBUS);

@@ -29,6 +29,11 @@ jar {
     }
 }
 
+shadowJar {
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
 test {
     useJUnitPlatform() 
 }

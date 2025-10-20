@@ -48,11 +48,18 @@ public class Main {
     /**
      * Icona per stato offline.
      */
-    private static final Icon redCircleIcon = new ImageIcon("./icon/redCircle.png");
+    private static final Icon redCircleIcon = new ImageIcon(Main.class.getResource("/icons/redCircle.png"));
     /**
      * Icona per stato online.
      */
-    private static final Icon greenCircleIcon = new ImageIcon("./icon/greenCircle.png");
+    private static final Icon greenCircleIcon = new ImageIcon(Main.class.getResource("/icons/greenCircle.png"));
+    
+    static {
+        // Verifica che le icone di stato siano state caricate correttamente
+        if (redCircleIcon.getIconWidth() <= 0 || greenCircleIcon.getIconWidth() <= 0) {
+            throw new RuntimeException("Impossibile caricare le icone di stato. Verificare che i file PNG siano presenti in src/main/resources/icons/");
+        }
+    }
     /**
      * Collezione di tutte le linee caricate.
      */
