@@ -58,6 +58,10 @@ jobs:
         git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
         git push origin "$TAG_NAME"
     
+    - name: Rename JAR with version
+      run: |
+        cp build/libs/Damose-1.0-SNAPSHOT.jar build/libs/Damose-${{ inputs.version_number }}.jar
+    
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -77,22 +81,9 @@ jobs:
           java -jar Damose-${{ inputs.version_number }}.jar
           ```
         files: |
-          build/libs/Damose-1.0-SNAPSHOT.jar
+          build/libs/Damose-${{ inputs.version_number }}.jar
         draft: false
         prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Rename JAR with version
-      run: |
-        cp build/libs/Damose-1.0-SNAPSHOT.jar build/libs/Damose-${{ inputs.version_number }}.jar
-    
-    - name: Upload versioned JAR to release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: v${{ inputs.version_number }}
-        files: |
-          build/libs/Damose-${{ inputs.version_number }}.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
